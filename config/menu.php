@@ -5,7 +5,9 @@ $menu = [
     'dashboard' => [
         'icon' => 'fas fa-home',
         'items' => [
-            ['label' => 'Principal', 'view' => 'dashboardSuperadmin']
+            ['label' => 'Principal', 'view' => 'dashboardSuperadmin'],
+            ['label' => 'Administrador', 'view' => 'dashboardAdmin'],
+            ['label' => 'Usuario', 'view' => 'dashboardUsuario']
         ]
     ],
     'administracion' => [
