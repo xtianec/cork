@@ -1,65 +1,56 @@
-<?php $current = basename($_SERVER['PHP_SELF'], '.php'); ?>
+<?php
+// vistas/layout/sidebar.php
 
+require_once __DIR__ . '/../../config/global.php';
+require_once __DIR__ . '/../../config/menu.php';
+
+$current = basename($_SERVER['PHP_SELF'], '.php');
+?>
 <div class="sidebar-wrapper sidebar-theme">
-  <nav id="sidebar">
-    <div class="shadow-bottom"></div>
-
-    <ul class="list-unstyled menu-categories" id="accordionExample">
-
-      <!-- DASHBOARD -->
-      <li class="menu <?= $current==='dashboardSuperadmin' ? 'active' : '' ?>">
-        <a href="#menuDash" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
-          <div><i class="fas fa-home"></i><span>Dashboard</span></div>
-          <div><i class="fas fa-chevron-right"></i></div>
-        </a>
-        <ul id="menuDash"
-            class="submenu list-unstyled collapse <?= $current==='dashboardSuperadmin' ? 'show' : '' ?>"
-            data-parent="#accordionExample">
-          <li class="<?= $current==='dashboardSuperadmin' ? 'active' : '' ?>">
-            <a href="<?= APP_URL ?>dashboardSuperadmin"> Principal </a>
-          </li>
+    <nav id="sidebar">
+        <div class="shadow-bottom"></div>
+        <ul class="list-unstyled menu-categories" id="accordionExample">
+<?php
+foreach ($menu as $key => $section) {
+    if (isset($section['items'])) {
+        $activeSection = false;
+        foreach ($section['items'] as $it) {
+            if ($it['view'] === $current) {
+                $activeSection = true;
+                break;
+            }
+        }
+        $sectionId = 'menu_' . $key;
+        ?>
+            <li class="menu <?= $activeSection ? 'active' : '' ?>">
+                <a href="#<?= $sectionId ?>" data-toggle="collapse" aria-expanded="<?= $activeSection ? 'true' : 'false' ?>" class="dropdown-toggle">
+                    <div><i class="<?= $section['icon'] ?>"></i><span><?= ucfirst($key) ?></span></div>
+                    <div><i class="fas fa-chevron-right"></i></div>
+                </a>
+                <ul id="<?= $sectionId ?>" class="submenu list-unstyled collapse <?= $activeSection ? 'show' : '' ?>" data-parent="#accordionExample">
+        <?php
+        foreach ($section['items'] as $item) {
+            $isActive = $item['view'] === $current ? 'active' : '';
+            echo "<li class=\"$isActive\"><a href=\"" . APP_URL . $item['view'] . "\">" . htmlspecialchars($item['label']) . "</a></li>";
+        }
+        ?>
+                </ul>
+            </li>
+        <?php
+    } else {
+        ?>
+            <li class="menu">
+                <a href="<?= $section['url'] ?>">
+                    <div><i class="<?= $section['icon'] ?>"></i><span><?= ucfirst($key) ?></span></div>
+                </a>
+            </li>
+        <?php
+    }
+}
+?>
         </ul>
-      </li>
-
-      <!-- ADMINISTRACIÓN -->
-      <li class="menu">
-        <a href="#menuAdmin" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
-          <div><i class="fas fa-folder"></i><span>Administración</span></div>
-          <div><i class="fas fa-chevron-right"></i></div>
-        </a>
-        <ul id="menuAdmin" class="submenu list-unstyled collapse" data-parent="#accordionExample">
-          <li><a href="<?= APP_URL ?>cliente">Cliente</a></li>
-          <li><a href="<?= APP_URL ?>proveedor">Proveedor</a></li>
-          <!-- … resto … -->
-        </ul>
-      </li>
-
-      <!-- INVENTARIO -->
-      <li class="menu">
-        <a href="#menuInvent" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
-          <div><i class="fas fa-dolly"></i><span>Gestion</span></div>
-          <div><i class="fas fa-chevron-right"></i></div>
-        </a>
-        <ul id="menuInvent" class="submenu list-unstyled collapse" data-parent="#accordionExample">
-          <li><a href="<?= APP_URL ?>inventario">Inventario</a></li>
-          <li><a href="<?= APP_URL ?>estados">Estados</a></li>
-        </ul>
-      </li>
-
-      <!-- SALIR -->
-      <li class="menu">
-        <a href="<?= APP_URL ?>logout">
-          <div><i class="fas fa-sign-out-alt"></i><span>Salir</span></div>
-        </a>
-      </li>
-
-    </ul>
-  </nav>
+    </nav>
 </div>
 
-
-
-<main class="main-content" id="content">
-                <div class="layout-px-spacing">
-                <div class="row layout-top-spacing">
-                    <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
+<div id="content" class="main-content">
+    <div class="layout-px-spacing">
