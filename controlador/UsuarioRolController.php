@@ -1,6 +1,6 @@
 <?php
-session_start(); header('Content-Type: application/json');
-require_once '../modelos/UsuarioRol.php';
+if (session_status() === PHP_SESSION_NONE) session_start(); header('Content-Type: application/json');
+require_once __DIR__ . '/../modelos/UsuarioRol.php';
 $ur = new UsuarioRol();
 
 if ($_SERVER['REQUEST_METHOD']==='POST'){

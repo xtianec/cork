@@ -1,6 +1,6 @@
 <?php
-session_start(); header('Content-Type: application/json');
-require_once '../modelos/Rol.php'; $rol = new Rol();
+if (session_status() === PHP_SESSION_NONE) session_start(); header('Content-Type: application/json');
+require_once __DIR__ . '/../modelos/Rol.php'; $rol = new Rol();
 
 /* CSRF */
 if ($_SERVER['REQUEST_METHOD']==='POST'){
