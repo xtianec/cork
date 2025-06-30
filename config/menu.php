@@ -7,7 +7,8 @@ $menu = [
         'items' => [
             ['label' => 'Principal',   'view' => 'dashboardSuperadmin'],
             ['label' => 'Inventario',  'view' => 'dashboardInventario'],
-            ['label' => 'Seguridad',   'view' => 'dashboardSeguridad']
+            ['label' => 'Seguridad',   'view' => 'dashboardSeguridad'],
+            ['label' => 'Gráficos por Módulo', 'view' => 'dashboardModuloGraficos']
         ]
     ],
     'administracion' => [
