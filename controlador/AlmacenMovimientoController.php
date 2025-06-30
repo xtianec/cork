@@ -47,10 +47,6 @@ switch ($op) {
     ]);
     break;
 
-
-    echo json_encode(['status' => 'success', 'msg' => 'Guardado correctamente.']);
-    break;
-
   case 'mostrar':
     echo json_encode($alm->mostrar((int)$_POST['id']));
     break;

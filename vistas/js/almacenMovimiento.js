@@ -24,6 +24,11 @@ $(function () {
     { extend: 'print', className: 'btn btn-sm btn-outline-primary', text: 'Imprimir', ...exportCfg }
   ];
 
+  function postJSON(url, data) {
+    return $.post(url, data, null, 'json')
+      .fail(() => Swal.fire({ icon: 'error', title: 'Error de comunicación' }));
+  }
+
   /* ───────────────  FILTRO GLOBAL DE FECHAS (DT) ─────────────── */
   $.fn.dataTable.ext.search.push((settings, data) => {
     const id = settings.nTable.id;
@@ -218,7 +223,7 @@ $(function () {
 
   $('#tblMov').on('click', '.btn-edit', function () {
     const id = $(this).data('id');
-    $.post(URL_MOV, { op: 'mostrar', id }, r => {
+    postJSON(URL_MOV, { op: 'mostrar', id }).done(r => {
       $('#selLinea').val(r.linea_id || 0);
       loadSublineas(r.linea_id || 0);
       $('#selSub').val(r.sublinea_id || 0);
@@ -239,7 +244,7 @@ $(function () {
       }, 100);
 
       $('#modalMov').modal('show');
-    }, 'json');
+      });
   });
 
   /* guardar / actualizar */
@@ -250,14 +255,13 @@ $(function () {
     const $btn = $(this).find('button[type=submit]');
     $btn.prop('disabled', true).find('.spinner-border').removeClass('d-none');
 
-    $.post(URL_MOV, data, res => {
+    postJSON(URL_MOV, data).done(res => {
       Swal.fire({ icon: res.status, title: res.msg });
       if (res.status === 'success') {
         $('#modalMov').modal('hide');
         refreshTables();
       }
-    }, 'json')
-      .always(() => $btn.prop('disabled', false)
+    }).always(() => $btn.prop('disabled', false)
         .find('.spinner-border').addClass('d-none'));
   });
 
@@ -265,13 +269,13 @@ $(function () {
   $('#tblMov').on('click', '.btn-delete', function () {
     const id = $(this).data('id');
     Swal.fire({ title: '¿Eliminar?', icon: 'warning', showCancelButton: true })
-      .then(r => {
-        if (!r.isConfirmed) return;
-        $.post(`${URL_MOV}?op=eliminar`, { id }, res => {
-          Swal.fire({ icon: res.status, title: res.msg });
-          if (res.status === 'success') refreshTables();
-        }, 'json');
-      });
+        .then(r => {
+          if (!r.isConfirmed) return;
+          postJSON(`${URL_MOV}?op=eliminar`, { id }).done(res => {
+            Swal.fire({ icon: res.status, title: res.msg });
+            if (res.status === 'success') refreshTables();
+          });
+        });
   });
 
   /* ---------- autocompletar precio ---------- */
@@ -280,13 +284,13 @@ $(function () {
     const tipo = $('select[name=tipo_movimiento_id]').val(); // 1-Ingreso, 2-Salida, 3-Devolución
     if (!artId || !tipo) return;
 
-    $.post(URL_ART + '?op=info', { id: artId }, r => {
+    postJSON(URL_ART + '?op=info', { id: artId }).done(r => {
       let precio = 0;
       if (tipo === '1') precio = r.precio_costo ?? 0; // Ingreso
       else if (tipo === '2') precio = r.precio_venta ?? 0; // Salida
       else if (tipo === '3') precio = 0;                    // Devolución
       $('input[name=precio_unitario]').val(precio);
-    }, 'json');
+    });
   }
   /* dispara al cambiar artículo o tipo */
   $(document)

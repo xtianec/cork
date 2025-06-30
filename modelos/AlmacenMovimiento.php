@@ -3,6 +3,24 @@ require_once __DIR__ . '/../config/Conexion.php';
 
 class AlmacenMovimiento
 {
+    /**
+     * Actualiza el stock del artículo aplicando el signo correspondiente.
+     * @param int  $articulo_id
+     * @param float $cantidad
+     * @param int  $tipo_movimiento_id
+     * @param bool $invert Invierte el efecto del movimiento
+     */
+    private function ajustarStock(int $articulo_id, float $cantidad, int $tipo_movimiento_id, bool $invert = false): void
+    {
+        $ingreso = in_array((int)$tipo_movimiento_id, [1, 3]);
+        $signo   = $ingreso ? 1 : -1;
+        if ($invert) $signo *= -1;
+
+        ejecutarConsulta(
+            "UPDATE articulo SET stock_actual = stock_actual + (? * ?) WHERE id = ?",
+            [$cantidad, $signo, $articulo_id]
+        );
+    }
 
     public function insertar($data)
     {
@@ -20,12 +38,11 @@ class AlmacenMovimiento
         ]);
 
         if ($ok) {
-            $signo = in_array((int)$data['tipo_movimiento_id'], [1, 3]) ? 1 : -1;
-            ejecutarConsulta("UPDATE articulo SET stock_actual = stock_actual + (? * ?) WHERE id = ?", [
-                $data['cantidad'],
-                $signo,
-                $data['articulo_id']
-            ]);
+            $this->ajustarStock(
+                (int)$data['articulo_id'],
+                (float)$data['cantidad'],
+                (int)$data['tipo_movimiento_id']
+            );
         }
 
         return $ok;
@@ -40,13 +57,12 @@ class AlmacenMovimiento
     {
         $anterior = $this->mostrar($id);
         if (!$anterior) return false;
-
-        $signoAnterior = in_array((int)$anterior['tipo_movimiento_id'], [1, 3]) ? -1 : 1;
-        ejecutarConsulta("UPDATE articulo SET stock_actual = stock_actual + (? * ?) WHERE id = ?", [
-            $anterior['cantidad'],
-            $signoAnterior,
-            $anterior['articulo_id']
-        ]);
+        $this->ajustarStock(
+            (int)$anterior['articulo_id'],
+            (float)$anterior['cantidad'],
+            (int)$anterior['tipo_movimiento_id'],
+            true
+        );
 
         $sql = "UPDATE almacen_movimiento SET articulo_id=?, tipo_movimiento_id=?, fecha=?, cantidad=?, precio_unitario=?, referencia=?, updated_at=NOW() WHERE id=?";
         $ok = ejecutarConsulta($sql, [
@@ -60,12 +76,11 @@ class AlmacenMovimiento
         ]);
 
         if ($ok) {
-            $signoNuevo = in_array((int)$data['tipo_movimiento_id'], [1, 3]) ? 1 : -1;
-            ejecutarConsulta("UPDATE articulo SET stock_actual = stock_actual + (? * ?) WHERE id = ?", [
-                $data['cantidad'],
-                $signoNuevo,
-                $data['articulo_id']
-            ]);
+            $this->ajustarStock(
+                (int)$data['articulo_id'],
+                (float)$data['cantidad'],
+                (int)$data['tipo_movimiento_id']
+            );
         }
 
         return $ok;
@@ -76,12 +91,12 @@ class AlmacenMovimiento
         $registro = $this->mostrar($id);
         if (!$registro) return false;
 
-        $signo = in_array((int)$registro['tipo_movimiento_id'], [1, 3]) ? -1 : 1;
-        ejecutarConsulta("UPDATE articulo SET stock_actual = stock_actual + (? * ?) WHERE id = ?", [
-            $registro['cantidad'],
-            $signo,
-            $registro['articulo_id']
-        ]);
+        $this->ajustarStock(
+            (int)$registro['articulo_id'],
+            (float)$registro['cantidad'],
+            (int)$registro['tipo_movimiento_id'],
+            true
+        );
 
         return ejecutarConsulta("DELETE FROM almacen_movimiento WHERE id=?", [$id]);
     }
