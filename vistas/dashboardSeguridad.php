@@ -1,5 +1,5 @@
 <?php
-$pageTitle = 'Dashboard';
+$pageTitle = 'Dashboard Seguridad';
 require 'layout/header.php';
 require 'layout/navbar.php';
 require 'layout/sidebar.php';
@@ -9,39 +9,34 @@ require 'layout/sidebar.php';
     <div class="col-sm-6 col-lg-3 mb-3">
       <div class="card text-center">
         <div class="card-body">
-          <h5 class="card-title">Clientes</h5>
-          <p class="display-4" id="countClientes">0</p>
-        </div>
-      </div>
-    </div>
-    <div class="col-sm-6 col-lg-3 mb-3">
-      <div class="card text-center">
-        <div class="card-body">
-          <h5 class="card-title">Proveedores</h5>
-          <p class="display-4" id="countProveedores">0</p>
-        </div>
-      </div>
-    </div>
-    <div class="col-sm-6 col-lg-3 mb-3">
-      <div class="card text-center">
-        <div class="card-body">
-          <h5 class="card-title">Artículos</h5>
-          <p class="display-4" id="countArticulos">0</p>
-        </div>
-      </div>
-    </div>
-    <div class="col-sm-6 col-lg-3 mb-3">
-      <div class="card text-center">
-        <div class="card-body">
           <h5 class="card-title">Usuarios</h5>
           <p class="display-4" id="countUsuarios">0</p>
         </div>
       </div>
     </div>
-  </div>
-  <div class="row">
-    <div class="col-12">
-      <div id="chartResumen" style="min-height:300px;"></div>
+    <div class="col-sm-6 col-lg-3 mb-3">
+      <div class="card text-center">
+        <div class="card-body">
+          <h5 class="card-title">Roles</h5>
+          <p class="display-4" id="countRoles">0</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-6 col-lg-3 mb-3">
+      <div class="card text-center">
+        <div class="card-body">
+          <h5 class="card-title">Permisos</h5>
+          <p class="display-4" id="countPermisos">0</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-6 col-lg-3 mb-3">
+      <div class="card text-center">
+        <div class="card-body">
+          <h5 class="card-title">Módulos</h5>
+          <p class="display-4" id="countModulos">0</p>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -49,5 +44,4 @@ require 'layout/sidebar.php';
 <script>
   window.BASE_URL = '<?= APP_URL ?>';
 </script>
-<script src="<?= APP_URL ?>app/template/cork/plugins/apex/apexcharts.min.js"></script>
-<script src="<?= APP_URL ?>vistas/js/dashboardSuperadmin.js"></script>
+<script src="<?= APP_URL ?>vistas/js/dashboardSeguridad.js"></script>
