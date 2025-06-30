@@ -8,7 +8,11 @@ $menu = [
             ['label' => 'Principal',   'view' => 'dashboardSuperadmin'],
             ['label' => 'Inventario',  'view' => 'dashboardInventario'],
             ['label' => 'Seguridad',   'view' => 'dashboardSeguridad'],
+
             ['label' => 'Roles',       'view' => 'dashboardRoles']
+=======
+            ['label' => 'Gráficos por Módulo', 'view' => 'dashboardModuloGraficos']
+
         ]
     ],
     'administracion' => [

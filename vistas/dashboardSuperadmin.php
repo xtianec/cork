@@ -39,9 +39,15 @@ require 'layout/sidebar.php';
       </div>
     </div>
   </div>
+  <div class="row">
+    <div class="col-12">
+      <div id="chartResumen" style="min-height:300px;"></div>
+    </div>
+  </div>
 </div>
 <?php require 'layout/footer.php'; ?>
 <script>
   window.BASE_URL = '<?= APP_URL ?>';
 </script>
+<script src="<?= APP_URL ?>app/template/cork/plugins/apex/apexcharts.min.js"></script>
 <script src="<?= APP_URL ?>vistas/js/dashboardSuperadmin.js"></script>
