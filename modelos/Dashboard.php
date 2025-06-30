@@ -19,4 +19,18 @@ class Dashboard
         }
         return $data;
     }
+
+    /**
+     * Devuelve el conteo de registros para las tablas indicadas.
+     * @param array $tablas Arreglo asociativo nombre=>tabla
+     */
+    public function resumenPorTablas(array $tablas): array
+    {
+        $data = [];
+        foreach ($tablas as $key => $tbl) {
+            $row = ejecutarConsultaSimpleFila("SELECT COUNT(*) AS total FROM $tbl");
+            $data[$key] = (int)($row['total'] ?? 0);
+        }
+        return $data;
+    }
 }
