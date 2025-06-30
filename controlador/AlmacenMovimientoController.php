@@ -1,10 +1,10 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) session_start();
 if (empty($_SESSION['user_id'])) $_SESSION['user_id'] = 1;   // <-- AÑADIR
 header('Content-Type: application/json; charset=utf-8');
 
 
-require_once '../modelos/AlmacenMovimiento.php';
+require_once __DIR__ . '/../modelos/AlmacenMovimiento.php';
 
 $alm = new AlmacenMovimiento();
 $op = $_REQUEST['op'];

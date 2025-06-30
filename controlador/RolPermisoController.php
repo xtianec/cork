@@ -1,6 +1,6 @@
 <?php
-session_start(); header('Content-Type: application/json');
-require_once '../modelos/RolPermiso.php';
+if (session_status() === PHP_SESSION_NONE) session_start(); header('Content-Type: application/json');
+require_once __DIR__ . '/../modelos/RolPermiso.php';
 $rp = new RolPermiso();
 
 if ($_SERVER['REQUEST_METHOD']==='POST'){
