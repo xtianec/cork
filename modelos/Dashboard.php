@@ -33,4 +33,18 @@ class Dashboard
         }
         return $data;
     }
+
+    /**
+     * Cantidad de usuarios asignados a cada rol
+     */
+    public function usuariosPorRol(): array
+    {
+        $sql = "SELECT r.nombre AS rol, COUNT(u.id) AS total
+                  FROM rol r
+             LEFT JOIN usuario_rol ur ON ur.rol_id=r.id
+             LEFT JOIN usuario u ON u.id=ur.usuario_id
+              GROUP BY r.id
+              ORDER BY r.nombre";
+        return ejecutarConsultaArray($sql) ?: [];
+    }
 }
