@@ -1,9 +1,9 @@
-    </main>
     </div>
-    </div><!-- /.app-container -->
-    </div>
-    </div>
-    <!-- ==========  FOOTER DE SCRIPTS  ========== -->
+</div>
+</div>
+</div><!-- /.app-container -->
+
+<!-- ==========  FOOTER DE SCRIPTS  ========== -->
    <script src="<?= APP_URL ?>app/template/cork/bootstrap/js/popper.min.js"></script>
     <script src="<?= APP_URL ?>app/template/cork/bootstrap/js/bootstrap.min.js"></script>
     <script src="<?= APP_URL ?>app/template/cork/plugins/perfect-scrollbar/perfect-scrollbar.min.js"></script>
