@@ -36,6 +36,7 @@ $menu = [
         'icon' => 'fas fa-dolly',
         'items' => [
             ['label' => 'Inventario', 'view' => 'inventario'],
+            ['label' => 'Reporte Inventario', 'view' => 'reporteInventario'],
             ['label' => 'Estados', 'view' => 'estados']
         ]
     ],
