@@ -1,0 +1,164 @@
+// vistas/js/articulos.js
+;(function ($) {
+  // URL base inyectada en la vista antes de este script
+  const BASE_URL = window.BASE_URL || '';
+  const ENDPOINTS = {
+    marca: 'MarcaController.php',
+    linea: 'LineaController.php',
+    sublinea: 'SublineaController.php',
+    unidad: 'UnidadMedidaController.php',
+    articulo: 'ArticuloController.php'
+  };
+
+  const selectors = {
+    $table: $('#tblArticulos'),
+    $form: $('#formArticulo'),
+    $tabLista: $('#tab-lista'),
+    $tabRegistro: $('#tab-registro'),
+    $btnNuevo: $('#btnNuevoArticulo'),
+    $selMarca: $('#marca_id'),
+    $selLinea: $('#linea_id'),
+    $selSublinea: $('#sublinea_id'),
+    $selUnidad: $('#unidad_medida_id'),
+    $imgPreview: $('#imgPreview'),
+    $fileInput: $('#imagen')
+  };
+
+  /**
+   * Llena un <select> con opciones (HTML) del backend.
+   */
+  function fillSelect($sel, tipo, params = {}, placeholder, selected = '') {
+    const url = `${BASE_URL}controlador/${ENDPOINTS[tipo]}?op=select`;
+    $sel.empty().append($('<option>').val('').text(placeholder));
+    return $.get(url, params)
+      .done(html => {
+        $sel.append(html);
+        if (selected) $sel.val(selected);
+      })
+      .fail(xhr => console.error(`Error cargando select ${tipo}:`, xhr));
+  }
+
+  /**
+   * Muestra el formulario: limpia o carga datos
+   */
+  function showForm(data = {}) {
+    selectors.$form[0].reset();
+    selectors.$form.find('[name=id]').val(data.id || '');
+    selectors.$imgPreview.hide();
+    selectors.$fileInput.next('.custom-file-label').text('Selecciona archivo…');
+    // Rellenar inputs de texto y números
+    ['codigo','numero_parte','nombre','descripcion','stock_minimo','stock_maximo','precio_costo','precio_venta'].forEach(name => {
+      const $f = selectors.$form.find(`[name="${name}"]`);
+      if ($f.length && data[name] !== undefined) $f.val(data[name]);
+    });
+    // Carga de selects en secuencia
+    fillSelect(selectors.$selMarca, 'marca', {}, '-- Selecciona Marca --', data.marca_id)
+      .then(() => fillSelect(selectors.$selLinea, 'linea', {}, '-- Selecciona Línea --', data.linea_id))
+      .then(() => fillSelect(selectors.$selSublinea, 'sublinea', { linea_id: data.linea_id }, '-- Selecciona Sub-línea --', data.sublinea_id))
+      .then(() => fillSelect(selectors.$selUnidad, 'unidad', {}, '-- Selecciona U. Medida --', data.unidad_medida_id))
+      .always(() => {
+        if (data.imagen) selectors.$imgPreview.attr('src', BASE_URL + data.imagen).show();
+        selectors.$tabRegistro.tab('show');
+      });
+  }
+
+  $(function () {
+    // Inicializar DataTable
+    const table = selectors.$table.DataTable({
+      ajax: {
+        url: `${BASE_URL}controlador/${ENDPOINTS.articulo}`,
+        data: { op: 'listar' },
+        dataSrc: 'data',
+        error: xhr => console.error('DataTable AJAX error:', xhr.responseText)
+      },
+      columns: [
+        { data: 0 },{ data: 1 },{ data: 2 },{ data: 3, orderable: false },
+        { data: 4 },{ data: 5 },{ data: 6 },{ data: 7 },
+        { data: 8 },{ data: 9 },{ data: 10 },{ data: 11, orderable: false }
+      ],
+      language: { loadingRecords: 'Cargando...', zeroRecords: 'No hay artículos', paginate: { previous: '‹', next: '›' } },
+      responsive: true,
+      autoWidth: false
+    });
+
+    // Facilitar número: seleccionar contenido al foco
+    selectors.$form.find('input[type=number]').on('focus', function() { this.select(); });
+
+    // Botón Nuevo artículo
+    selectors.$btnNuevo.click(() => showForm());
+
+    // Botón Editar artículo
+    selectors.$table.on('click', '.btn-edit', function () {
+      const id = $(this).data('id');
+      $.post(`${BASE_URL}controlador/${ENDPOINTS.articulo}?op=mostrar`, { id }, 'json')
+        .done(showForm)
+        .fail(xhr => console.error('Error al obtener artículo:', xhr));
+    });
+
+    // Botón Cancelar
+    selectors.$form.on('click', 'button[type=button]', e => {
+      e.preventDefault(); selectors.$tabLista.tab('show');
+    });
+
+    // Cambiar sublínea al cambiar línea
+    selectors.$selLinea.change(() => fillSelect(selectors.$selSublinea, 'sublinea', { linea_id: selectors.$selLinea.val() }, '-- Selecciona Sub-línea --'));
+
+    // Preview nombre de archivo
+    selectors.$fileInput.change(function () {
+      $(this).next('.custom-file-label').text(this.files[0]?.name || 'Selecciona archivo…');
+    });
+
+    // Validación base antes de AJAX
+    function validateForm() {
+      const codigo = selectors.$form.find('[name=codigo]').val().trim();
+      const nombre = selectors.$form.find('[name=nombre]').val().trim();
+      if (!codigo) { Swal.fire('Atención','El código es obligatorio','warning'); return false; }
+      if (!nombre) { Swal.fire('Atención','El nombre es obligatorio','warning'); return false; }
+      if (!selectors.$selMarca.val()) { Swal.fire('Atención','Debe seleccionar una marca','warning'); return false; }
+      if (!selectors.$selLinea.val()) { Swal.fire('Atención','Debe seleccionar una línea','warning'); return false; }
+      if (!selectors.$selUnidad.val()) { Swal.fire('Atención','Debe seleccionar unidad de medida','warning'); return false; }
+      // Validar números no negativos
+      let isValid = true;
+      ['stock_minimo','stock_maximo','precio_costo','precio_venta'].forEach(name => {
+        const val = parseFloat(selectors.$form.find(`[name="${name}"]`).val());
+        if (isNaN(val) || val < 0) {
+          Swal.fire('Atención', `El valor de ${name.replace('_',' ')} no puede ser negativo`,`warning`);
+          isValid = false;
+        }
+      });
+      return isValid;
+    }
+
+    // Guardar/editar artículo
+    selectors.$form.submit(function (e) {
+      e.preventDefault();
+      if (!validateForm()) return;
+      const op = selectors.$form.find('[name=id]').val() ? 'editar' : 'guardar';
+      $.ajax({
+        url: `${BASE_URL}controlador/${ENDPOINTS.articulo}?op=${op}`,
+        method: 'POST',
+        data: new FormData(this),
+        processData: false,
+        contentType: false,
+        dataType: 'json'
+      }).done(resp => {
+        Swal.fire(resp.status==='success'?'¡Éxito!':'Error',resp.msg,resp.status);
+        if (resp.status==='success') { table.ajax.reload(null,false); selectors.$tabLista.tab('show'); }
+      });
+    });
+
+    // Activar/desactivar artículo
+    selectors.$table.on('click', '.btn-deactivate, .btn-activate', function () {
+      const isDeactivate = $(this).hasClass('btn-deactivate');
+      const action = isDeactivate?'desactivar':'activar';
+      Swal.fire({ title:isDeactivate?'¿Desactivar artículo?':'¿Activar artículo?', icon:isDeactivate?'warning':'question', showCancelButton:true, confirmButtonText:'Sí' })
+        .then(r => {
+          if (r.isConfirmed) {
+            const id = $(this).data('id');
+            $.post(`${BASE_URL}controlador/${ENDPOINTS.articulo}?op=${action}`,{id},'json')
+              .done(x=>{Swal.fire('',x.msg,x.status);table.ajax.reload(null,false);});
+          }
+        });
+    });
+  });
+})(jQuery);
