@@ -42,3 +42,33 @@ $menu = [
         'url'  => APP_URL . 'logout'
     ]
 ];
+
+// Generar secci\xC3\xB3n "otros" autom\xC3\xA1ticamente con vistas faltantes
+$viewDir = __DIR__ . '/../vistas';
+$allViews = array_map(function ($path) {
+    return basename($path, '.php');
+}, glob($viewDir . '/*.php'));
+
+$existing = [];
+foreach ($menu as $section) {
+    if (isset($section['items'])) {
+        foreach ($section['items'] as $item) {
+            $existing[] = $item['view'];
+        }
+    }
+}
+
+$otherViews = [];
+foreach ($allViews as $view) {
+    if (!in_array($view, $existing)) {
+        $label = ucwords(trim(preg_replace('/(?<!^)([A-Z])/', ' $1', $view)));
+        $otherViews[] = ['label' => $label, 'view' => $view];
+    }
+}
+
+if ($otherViews) {
+    $menu['otros'] = [
+        'icon' => 'fas fa-th-large',
+        'items' => $otherViews
+    ];
+}
