@@ -616,6 +616,57 @@ CREATE TABLE `vacacion` (
   `updated_at` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `cotizacion`
+--
+
+CREATE TABLE `cotizacion` (
+  `id` int(11) NOT NULL,
+  `cliente_id` int(11) NOT NULL,
+  `fecha` date NOT NULL,
+  `monto_total` decimal(14,2) NOT NULL DEFAULT 0,
+  `estado_id` int(11) NOT NULL,
+  `is_active` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  `updated_at` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `pedido_venta`
+--
+
+CREATE TABLE `pedido_venta` (
+  `id` int(11) NOT NULL,
+  `cliente_id` int(11) NOT NULL,
+  `fecha` date NOT NULL,
+  `monto_total` decimal(14,2) NOT NULL DEFAULT 0,
+  `estado_id` int(11) NOT NULL,
+  `is_active` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  `updated_at` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `atencion_cliente`
+--
+
+CREATE TABLE `atencion_cliente` (
+  `id` int(11) NOT NULL,
+  `cliente_id` int(11) NOT NULL,
+  `asunto` varchar(200) NOT NULL,
+  `descripcion` text DEFAULT NULL,
+  `estado` varchar(20) NOT NULL DEFAULT 'Abierto',
+  `is_active` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  `updated_at` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 
 --
 -- Estructura Stand-in para la vista `vw_inventario_actual`
@@ -915,6 +966,29 @@ ALTER TABLE `vacacion`
   ADD KEY `empleado_id` (`empleado_id`);
 
 --
+-- Indices de la tabla `cotizacion`
+--
+ALTER TABLE `cotizacion`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `cliente_id` (`cliente_id`),
+  ADD KEY `estado_id` (`estado_id`);
+
+--
+-- Indices de la tabla `pedido_venta`
+--
+ALTER TABLE `pedido_venta`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `cliente_id` (`cliente_id`),
+  ADD KEY `estado_id` (`estado_id`);
+
+--
+-- Indices de la tabla `atencion_cliente`
+--
+ALTER TABLE `atencion_cliente`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `cliente_id` (`cliente_id`);
+
+--
 -- AUTO_INCREMENT de las tablas volcadas
 --
 
@@ -1123,6 +1197,24 @@ ALTER TABLE `asistencia`
 ALTER TABLE `vacacion`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
+--
+-- AUTO_INCREMENT de la tabla `cotizacion`
+--
+ALTER TABLE `cotizacion`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `pedido_venta`
+--
+ALTER TABLE `pedido_venta`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `atencion_cliente`
+--
+ALTER TABLE `atencion_cliente`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
 -- Restricciones para tablas volcadas
 
 --
@@ -1205,6 +1297,26 @@ ALTER TABLE `asistencia`
 --
 ALTER TABLE `vacacion`
   ADD CONSTRAINT `vacacion_ibfk_1` FOREIGN KEY (`empleado_id`) REFERENCES `empleado` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `cotizacion`
+--
+ALTER TABLE `cotizacion`
+  ADD CONSTRAINT `cotizacion_cliente_fk` FOREIGN KEY (`cliente_id`) REFERENCES `cliente` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `cotizacion_estado_fk` FOREIGN KEY (`estado_id`) REFERENCES `estado_cotizacion` (`id`) ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `pedido_venta`
+--
+ALTER TABLE `pedido_venta`
+  ADD CONSTRAINT `pedido_venta_cliente_fk` FOREIGN KEY (`cliente_id`) REFERENCES `cliente` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `pedido_venta_estado_fk` FOREIGN KEY (`estado_id`) REFERENCES `estado_documento` (`id`) ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `atencion_cliente`
+--
+ALTER TABLE `atencion_cliente`
+  ADD CONSTRAINT `atencion_cliente_fk` FOREIGN KEY (`cliente_id`) REFERENCES `cliente` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
