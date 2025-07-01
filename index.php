@@ -4,6 +4,14 @@
 // Iniciar la sesión
 session_start();
 
+// Soporte para el servidor embebido de PHP: servir archivos estáticos
+if (PHP_SAPI === 'cli-server') {
+    $file = __DIR__ . parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+    if (is_file($file)) {
+        return false; // Dejar que el servidor embebido entregue el recurso
+    }
+}
+
 // Autoload de Composer (si está disponible)
 if (file_exists(__DIR__ . '/vendor/autoload.php')) {
     require_once __DIR__ . '/vendor/autoload.php';
@@ -33,7 +41,8 @@ if ($url === '') {
     $url = trim($reqPath, '/');
 
     if ($url === '') {
-        $url = 'home';
+        require 'vistas/login.php';
+        return;
     }
 }
 
