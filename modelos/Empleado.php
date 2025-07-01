@@ -78,4 +78,13 @@ class Empleado
               ORDER BY e.nombre";
         return ejecutarConsulta($sql);
     }
+
+    public function select()
+    {
+        $sql = "SELECT id, CONCAT(nombre, ' ', apellido) AS nombre
+                  FROM empleado
+                 WHERE is_active = 1
+              ORDER BY nombre";
+        return ejecutarConsulta($sql);
+    }
 }
