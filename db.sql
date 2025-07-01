@@ -582,6 +582,40 @@ CREATE TABLE `empleado` (
   `updated_at` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `asistencia`
+--
+
+CREATE TABLE `asistencia` (
+  `id` int(11) NOT NULL,
+  `empleado_id` int(11) NOT NULL,
+  `fecha` date NOT NULL,
+  `hora_entrada` time DEFAULT NULL,
+  `hora_salida` time DEFAULT NULL,
+  `is_active` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  `updated_at` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `vacacion`
+--
+
+CREATE TABLE `vacacion` (
+  `id` int(11) NOT NULL,
+  `empleado_id` int(11) NOT NULL,
+  `fecha_inicio` date NOT NULL,
+  `fecha_fin` date NOT NULL,
+  `dias` int(11) NOT NULL,
+  `is_active` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  `updated_at` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 
 --
 -- Estructura Stand-in para la vista `vw_inventario_actual`
@@ -867,6 +901,20 @@ ALTER TABLE `empleado`
   ADD KEY `cargo_id` (`cargo_id`);
 
 --
+-- Indices de la tabla `asistencia`
+--
+ALTER TABLE `asistencia`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `empleado_id` (`empleado_id`);
+
+--
+-- Indices de la tabla `vacacion`
+--
+ALTER TABLE `vacacion`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `empleado_id` (`empleado_id`);
+
+--
 -- AUTO_INCREMENT de las tablas volcadas
 --
 
@@ -1063,6 +1111,18 @@ ALTER TABLE `cargo`
 ALTER TABLE `empleado`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
+--
+-- AUTO_INCREMENT de la tabla `asistencia`
+--
+ALTER TABLE `asistencia`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `vacacion`
+--
+ALTER TABLE `vacacion`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
 -- Restricciones para tablas volcadas
 
 --
@@ -1133,6 +1193,18 @@ ALTER TABLE `usuario_rol`
 --
 ALTER TABLE `empleado`
   ADD CONSTRAINT `empleado_ibfk_1` FOREIGN KEY (`cargo_id`) REFERENCES `cargo` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `asistencia`
+--
+ALTER TABLE `asistencia`
+  ADD CONSTRAINT `asistencia_ibfk_1` FOREIGN KEY (`empleado_id`) REFERENCES `empleado` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `vacacion`
+--
+ALTER TABLE `vacacion`
+  ADD CONSTRAINT `vacacion_ibfk_1` FOREIGN KEY (`empleado_id`) REFERENCES `empleado` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
