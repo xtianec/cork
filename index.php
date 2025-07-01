@@ -13,8 +13,21 @@ if (file_exists(__DIR__ . '/vendor/autoload.php')) {
 require_once 'config/global.php';
 require_once 'config/Utilidades.php';
 
-// Obtener la URL desde el parámetro 'url' o establecer 'home' por defecto
-$url = isset($_GET['url']) ? $_GET['url'] : 'home';
+// Obtener la ruta solicitada
+$url = $_GET['url'] ?? '';
+
+// Si no viene por parámetro, intentar deducirla desde REQUEST_URI
+if ($url === '') {
+    $reqPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+    $base    = rtrim(APP_URL, '/');
+    if (strpos($reqPath, $base) === 0) {
+        $reqPath = substr($reqPath, strlen($base));
+    }
+    $url = trim($reqPath, '/');
+    if ($url === '') {
+        $url = 'home';
+    }
+}
 
 // Separar la URL en segmentos
 $url = explode('/', $url);
