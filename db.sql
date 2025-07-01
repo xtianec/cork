@@ -721,6 +721,63 @@ CREATE TABLE `atencion_cliente` (
   `updated_at` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Estructura de tabla para la tabla `solicitud_compra`
+--
+CREATE TABLE `solicitud_compra` (
+  `id` int(11) NOT NULL,
+  `codigo` varchar(20) NOT NULL,
+  `fecha` date NOT NULL,
+  `descripcion` varchar(200) DEFAULT NULL,
+  `estado_id` int(11) NOT NULL DEFAULT 1,
+  `is_active` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  `updated_at` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Estructura de tabla para la tabla `orden_compra`
+--
+CREATE TABLE `orden_compra` (
+  `id` int(11) NOT NULL,
+  `proveedor_id` int(11) NOT NULL,
+  `solicitud_id` int(11) DEFAULT NULL,
+  `fecha` date NOT NULL,
+  `total` decimal(14,2) NOT NULL DEFAULT 0,
+  `estado_id` int(11) NOT NULL,
+  `is_active` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  `updated_at` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Estructura de tabla para la tabla `recepcion_mercancia`
+--
+CREATE TABLE `recepcion_mercancia` (
+  `id` int(11) NOT NULL,
+  `orden_compra_id` int(11) NOT NULL,
+  `fecha` date NOT NULL,
+  `observaciones` varchar(200) DEFAULT NULL,
+  `is_active` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  `updated_at` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Estructura de tabla para la tabla `evaluacion_proveedor`
+--
+CREATE TABLE `evaluacion_proveedor` (
+  `id` int(11) NOT NULL,
+  `proveedor_id` int(11) NOT NULL,
+  `fecha` date NOT NULL,
+  `calificacion` int(11) NOT NULL,
+  `comentarios` text DEFAULT NULL,
+  `is_active` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  `updated_at` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
 
 --
 -- Estructura Stand-in para la vista `vw_inventario_actual`
@@ -1066,6 +1123,35 @@ ALTER TABLE `atencion_cliente`
   ADD KEY `cliente_id` (`cliente_id`);
 
 --
+--
+-- Indices de la tabla `solicitud_compra`
+--
+ALTER TABLE `solicitud_compra`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `estado_id` (`estado_id`);
+
+--
+-- Indices de la tabla `orden_compra`
+--
+ALTER TABLE `orden_compra`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `proveedor_id` (`proveedor_id`),
+  ADD KEY `solicitud_id` (`solicitud_id`),
+  ADD KEY `estado_id` (`estado_id`);
+
+--
+-- Indices de la tabla `recepcion_mercancia`
+--
+ALTER TABLE `recepcion_mercancia`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `orden_compra_id` (`orden_compra_id`);
+
+--
+-- Indices de la tabla `evaluacion_proveedor`
+--
+ALTER TABLE `evaluacion_proveedor`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `proveedor_id` (`proveedor_id`);
 -- AUTO_INCREMENT de las tablas volcadas
 --
 
@@ -1311,6 +1397,29 @@ ALTER TABLE `atencion_cliente`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 -- Restricciones para tablas volcadas
+--
+-- AUTO_INCREMENT de la tabla `solicitud_compra`
+--
+ALTER TABLE `solicitud_compra`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `orden_compra`
+--
+ALTER TABLE `orden_compra`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `recepcion_mercancia`
+--
+ALTER TABLE `recepcion_mercancia`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `evaluacion_proveedor`
+--
+ALTER TABLE `evaluacion_proveedor`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 
@@ -1426,6 +1535,32 @@ ALTER TABLE `orden_trabajo_tarea`
 --
 ALTER TABLE `atencion_cliente`
   ADD CONSTRAINT `atencion_cliente_fk` FOREIGN KEY (`cliente_id`) REFERENCES `cliente` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+--
+-- Filtros para la tabla `solicitud_compra`
+--
+ALTER TABLE `solicitud_compra`
+  ADD CONSTRAINT `solicitud_compra_estado_fk` FOREIGN KEY (`estado_id`) REFERENCES `estado_orden_compra` (`id`) ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `orden_compra`
+--
+ALTER TABLE `orden_compra`
+  ADD CONSTRAINT `orden_compra_proveedor_fk` FOREIGN KEY (`proveedor_id`) REFERENCES `proveedor` (`id`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `orden_compra_solicitud_fk` FOREIGN KEY (`solicitud_id`) REFERENCES `solicitud_compra` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `orden_compra_estado_fk`   FOREIGN KEY (`estado_id`) REFERENCES `estado_orden_compra` (`id`) ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `recepcion_mercancia`
+--
+ALTER TABLE `recepcion_mercancia`
+  ADD CONSTRAINT `recepcion_mercancia_orden_fk` FOREIGN KEY (`orden_compra_id`) REFERENCES `orden_compra` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `evaluacion_proveedor`
+--
+ALTER TABLE `evaluacion_proveedor`
+  ADD CONSTRAINT `evaluacion_proveedor_prov_fk` FOREIGN KEY (`proveedor_id`) REFERENCES `proveedor` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
