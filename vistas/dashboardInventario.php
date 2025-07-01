@@ -39,9 +39,19 @@ require 'layout/sidebar.php';
       </div>
     </div>
   </div>
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+          <div id="chartArticulosMarca" style="height:350px;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 <?php require 'layout/footer.php'; ?>
 <script>
   window.BASE_URL = '<?= APP_URL ?>';
 </script>
+<script src="<?= APP_URL ?>app/template/cork/plugins/apex/apexcharts.min.js"></script>
 <script src="<?= APP_URL ?>vistas/js/dashboardInventario.js"></script>

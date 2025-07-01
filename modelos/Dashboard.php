@@ -47,4 +47,18 @@ class Dashboard
               ORDER BY r.nombre";
         return ejecutarConsultaArray($sql) ?: [];
     }
+
+    /**
+     * Cantidad de artículos registrados por marca
+     */
+    public function articulosPorMarca(): array
+    {
+        $sql = "SELECT IFNULL(m.nombre, 'Sin Marca') AS marca, COUNT(a.id) AS total
+                  FROM articulo a
+             LEFT JOIN marca m ON a.marca_id = m.id
+              GROUP BY m.nombre
+              ORDER BY marca";
+
+        return ejecutarConsultaArray($sql) ?: [];
+    }
 }
