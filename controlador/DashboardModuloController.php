@@ -28,6 +28,10 @@ switch ($op) {
         echo json_encode($dash->resumenPorTablas($tablas));
         break;
 
+    case 'articulos_marca':
+        echo json_encode($dash->articulosPorMarca());
+        break;
+
     default:
         http_response_code(400);
         echo json_encode(['status' => 'error', 'msg' => 'Operación desconocida']);
