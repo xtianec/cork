@@ -28,6 +28,13 @@ $menu = [
             ['label' => 'Categoría Proveedor', 'view' => 'categoriaProveedor']
         ]
     ],
+    'rrhh' => [
+        'icon' => 'fas fa-users',
+        'items' => [
+            ['label' => 'Cargos', 'view' => 'cargo'],
+            ['label' => 'Empleados', 'view' => 'empleado']
+        ]
+    ],
     'inventario' => [
         'icon' => 'fas fa-dolly',
         'items' => [
