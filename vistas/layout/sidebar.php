@@ -45,6 +45,12 @@ $menu = [
             ['label' => 'Módulos', 'view' => 'modulo']
         ]
     ],
+    'reportes' => [
+        'icon' => 'fas fa-chart-bar',
+        'items' => [
+            ['label' => 'Reporte Sistema', 'view' => 'reporteSistema']
+        ]
+    ],
     'logout' => [
         'icon' => 'fas fa-sign-out-alt',
         'url'  => APP_URL . 'logout'
