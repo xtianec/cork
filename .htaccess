@@ -1,5 +1,4 @@
 RewriteEngine On
-RewriteBase /cork/
 
 # Evitar reescritura si el recurso existe
 RewriteCond %{REQUEST_FILENAME} -f [OR]

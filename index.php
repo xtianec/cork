@@ -20,10 +20,18 @@ $url = $_GET['url'] ?? '';
 if ($url === '') {
     $reqPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
     $base    = rtrim(APP_URL, '/');
-    if (strpos($reqPath, $base) === 0) {
+
+    // Detectar automáticamente el directorio base si no está especificado
+    if ($base === '') {
+        $base = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
+    }
+
+    if ($base !== '' && strpos($reqPath, $base) === 0) {
         $reqPath = substr($reqPath, strlen($base));
     }
+
     $url = trim($reqPath, '/');
+
     if ($url === '') {
         $url = 'home';
     }
