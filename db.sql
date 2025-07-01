@@ -653,6 +653,60 @@ CREATE TABLE `pedido_venta` (
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `proyecto`
+--
+
+CREATE TABLE `proyecto` (
+  `id` int(11) NOT NULL,
+  `nombre` varchar(150) NOT NULL,
+  `descripcion` text DEFAULT NULL,
+  `fecha_inicio` date DEFAULT NULL,
+  `fecha_fin` date DEFAULT NULL,
+  `is_active` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  `updated_at` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `orden_trabajo`
+--
+
+CREATE TABLE `orden_trabajo` (
+  `id` int(11) NOT NULL,
+  `proyecto_id` int(11) NOT NULL,
+  `codigo` varchar(50) NOT NULL,
+  `descripcion` text DEFAULT NULL,
+  `estado_id` int(11) DEFAULT NULL,
+  `fecha_inicio` date DEFAULT NULL,
+  `fecha_fin` date DEFAULT NULL,
+  `is_active` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  `updated_at` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `orden_trabajo_tarea`
+--
+
+CREATE TABLE `orden_trabajo_tarea` (
+  `id` int(11) NOT NULL,
+  `orden_trabajo_id` int(11) NOT NULL,
+  `descripcion` varchar(255) NOT NULL,
+  `empleado_id` int(11) DEFAULT NULL,
+  `horas` decimal(8,2) DEFAULT NULL,
+  `costo_hora` decimal(14,2) DEFAULT NULL,
+  `costo_total` decimal(14,2) DEFAULT NULL,
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  `updated_at` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `atencion_cliente`
 --
 
@@ -982,6 +1036,29 @@ ALTER TABLE `pedido_venta`
   ADD KEY `estado_id` (`estado_id`);
 
 --
+-- Indices de la tabla `proyecto`
+--
+ALTER TABLE `proyecto`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indices de la tabla `orden_trabajo`
+--
+ALTER TABLE `orden_trabajo`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `codigo` (`codigo`),
+  ADD KEY `proyecto_id` (`proyecto_id`),
+  ADD KEY `estado_id` (`estado_id`);
+
+--
+-- Indices de la tabla `orden_trabajo_tarea`
+--
+ALTER TABLE `orden_trabajo_tarea`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `orden_trabajo_id` (`orden_trabajo_id`),
+  ADD KEY `empleado_id` (`empleado_id`);
+
+--
 -- Indices de la tabla `atencion_cliente`
 --
 ALTER TABLE `atencion_cliente`
@@ -1210,6 +1287,24 @@ ALTER TABLE `pedido_venta`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT de la tabla `proyecto`
+--
+ALTER TABLE `proyecto`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `orden_trabajo`
+--
+ALTER TABLE `orden_trabajo`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `orden_trabajo_tarea`
+--
+ALTER TABLE `orden_trabajo_tarea`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT de la tabla `atencion_cliente`
 --
 ALTER TABLE `atencion_cliente`
@@ -1311,6 +1406,20 @@ ALTER TABLE `cotizacion`
 ALTER TABLE `pedido_venta`
   ADD CONSTRAINT `pedido_venta_cliente_fk` FOREIGN KEY (`cliente_id`) REFERENCES `cliente` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `pedido_venta_estado_fk` FOREIGN KEY (`estado_id`) REFERENCES `estado_documento` (`id`) ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `orden_trabajo`
+--
+ALTER TABLE `orden_trabajo`
+  ADD CONSTRAINT `orden_trabajo_proyecto_fk` FOREIGN KEY (`proyecto_id`) REFERENCES `proyecto` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `orden_trabajo_estado_fk` FOREIGN KEY (`estado_id`) REFERENCES `estado_orden_trabajo` (`id`) ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `orden_trabajo_tarea`
+--
+ALTER TABLE `orden_trabajo_tarea`
+  ADD CONSTRAINT `ott_orden_fk` FOREIGN KEY (`orden_trabajo_id`) REFERENCES `orden_trabajo` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `ott_empleado_fk` FOREIGN KEY (`empleado_id`) REFERENCES `empleado` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `atencion_cliente`
