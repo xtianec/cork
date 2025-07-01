@@ -55,6 +55,34 @@ class Usuario
         return $user;
     }
 
+    /**
+     * Verifica las credenciales de un usuario.
+     * @return array|null Datos del usuario o null si falló
+     */
+    public function login(string $u, string $p): ?array
+    {
+        $info = ejecutarConsultaSimpleFila(
+            "SELECT id,username,email,password,estado
+               FROM usuario
+              WHERE (username=? OR email=?) AND deleted_at IS NULL
+              LIMIT 1",
+            [$u, $u]
+        );
+        if (!$info || (int)$info['estado'] !== 1) return null;
+        if (!password_verify($p, $info['password'])) return null;
+
+        unset($info['password']);
+        $roles = ejecutarConsultaArray(
+            "SELECT r.nombre
+               FROM usuario_rol ur
+               JOIN rol r ON r.id=ur.rol_id AND r.deleted_at IS NULL
+              WHERE ur.usuario_id=?",
+            [$info['id']]
+        );
+        $info['roles'] = array_column($roles, 'nombre');
+        return $info;
+    }
+
     /* ───────── CRUD con roles ───────── */
     public function insertar(array $d): bool
     {
