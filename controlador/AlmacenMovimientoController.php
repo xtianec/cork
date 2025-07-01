@@ -7,7 +7,7 @@ header('Content-Type: application/json; charset=utf-8');
 require_once __DIR__ . '/../modelos/AlmacenMovimiento.php';
 
 $alm = new AlmacenMovimiento();
-$op = $_REQUEST['op'];
+$op = $_REQUEST['op'] ?? '';
 
 switch ($op) {
   case 'listar':
@@ -107,5 +107,10 @@ switch ($op) {
     $rows = [];
     while ($row = $rs->fetch_assoc()) $rows[] = $row;
     echo json_encode(['data' => $rows]);
+    break;
+
+  default:
+    http_response_code(400);
+    echo json_encode(['status' => 'error', 'msg' => 'Operación inválida']);
     break;
 }

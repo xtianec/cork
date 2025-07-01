@@ -46,6 +46,11 @@ $controllerPath = 'controlador/' . $controllerName . '.php';
 
 // Verificar si el archivo del controlador existe
 if (file_exists($controllerPath)) {
+    // Ajustar "op" para controladores de tipo script
+    if (!isset($_REQUEST['op']) && $method !== 'index') {
+        $_GET['op'] = $_REQUEST['op'] = $method;
+    }
+
     require_once $controllerPath;
 
     // Verificar si la clase del controlador existe
@@ -62,9 +67,7 @@ if (file_exists($controllerPath)) {
             echo 'Error 404: Método no encontrado';
         }
     } else {
-        // Clase del controlador no encontrada
-        logError('Controlador no encontrado: ' . $controllerName);
-        echo 'Error 404: Controlador no encontrado';
+        // Controlador de tipo script ya ejecutado al incluir el archivo
     }
 } else {
     // Archivo del controlador no encontrado
