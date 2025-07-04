@@ -48,18 +48,28 @@ if (file_exists($controllerPath)) {
         if (method_exists($controller, $method)) {
             // Llamar al método con los parámetros
             call_user_func_array([$controller, $method], $params);
-        } else {
-            // Método no encontrado
-            logError('Método no encontrado: ' . $controllerName . '->' . $method);
-            echo 'Error 404: Método no encontrado';
+            return;
         }
-    } else {
-        // Clase del controlador no encontrada
-        logError('Controlador no encontrado: ' . $controllerName);
-        echo 'Error 404: Controlador no encontrado';
+
+        // Método no encontrado
+        logError('Método no encontrado: ' . $controllerName . '->' . $method);
+        echo 'Error 404: Método no encontrado';
+        return;
     }
-} else {
-    // Archivo del controlador no encontrado
-    logError('Archivo del controlador no encontrado: ' . $controllerPath);
-    echo 'Error 404: Página no encontrada';
+
+    // Clase del controlador no encontrada
+    logError('Controlador no encontrado: ' . $controllerName);
+    echo 'Error 404: Controlador no encontrado';
+    return;
 }
+
+// Si no existe controlador, intentamos cargar la vista directamente
+$viewPath = 'vistas/' . ($url[0] ?? '') . '.php';
+if (file_exists($viewPath)) {
+    require_once $viewPath;
+    return;
+}
+
+// Archivo del controlador no encontrado y no existe la vista
+logError('Archivo del controlador no encontrado: ' . $controllerPath);
+echo 'Error 404: Página no encontrada';
