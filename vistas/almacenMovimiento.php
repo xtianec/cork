@@ -231,7 +231,8 @@ require 'layout/sidebar.php';
 
   <?php require 'layout/footer.php'; ?>
 
+  <!-- Inyectar la URL base antes de cargar el script -->
   <script>
-    const BASE_URL = '<?= APP_URL ?>';
+    window.BASE_URL = '<?= APP_URL ?>';
   </script>
   <script src="<?= APP_URL ?>vistas/js/almacenMovimiento.js"></script>
