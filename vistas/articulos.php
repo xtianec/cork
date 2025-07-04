@@ -61,7 +61,8 @@
       <div class="card shadow-sm">
         <div class="card-body">
           <form id="formArticulo" enctype="multipart/form-data" novalidate>
-            <input type="hidden" name="id" value="">
+              <input type="hidden" name="id" value="">
+              <input type="hidden" name="parte_id" value="">
 
             <!-- Primera fila -->
             <div class="form-row">

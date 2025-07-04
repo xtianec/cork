@@ -53,6 +53,7 @@
   function showForm(data = {}) {
     selectors.$form[0].reset();
     selectors.$form.find('[name=id]').val(data.id || '');
+    selectors.$form.find('[name=parte_id]').val(data.parte_id || '');
     selectors.$imgPreview.hide();
     selectors.$fileInput.next('.custom-file-label').text('Selecciona archivo…');
     selectors.$tblPartes.empty();
