@@ -23,7 +23,8 @@
     $imgPreview: $('#imgPreview'),
     $fileInput: $('#imagen'),
     $tblPartes: $('#tblPartes tbody'),
-    $btnAddParte: $('#btnAddParte')
+    $btnAddParte: $('#btnAddParte'),
+    $btnCancel: $('#btnCancel')
   };
 
   /**
@@ -122,8 +123,9 @@
     });
 
     // Botón Cancelar
-    selectors.$form.on('click', 'button[type=button]', e => {
-      e.preventDefault(); selectors.$tabLista.tab('show');
+    selectors.$btnCancel.click(function(e){
+      e.preventDefault();
+      selectors.$tabLista.tab('show');
     });
 
     // Cambiar sublínea al cambiar línea
