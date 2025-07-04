@@ -22,7 +22,9 @@ $cargo_contacto       = isset($_POST['cargo_contacto'])     ? limpiarCadena($_PO
 $telefono_contacto    = isset($_POST['telefono_contacto'])  ? limpiarCadena($_POST['telefono_contacto'])  : '';
 $email_contacto       = isset($_POST['email_contacto'])     ? limpiarCadena($_POST['email_contacto'])     : '';
 
-switch ($_GET['op']) {
+$op = $_GET['op'] ?? '';
+
+switch ($op) {
     case 'guardar':
         $rspta = $prov->insertar(
             $ruc, $razon_social, $categoria_id,
@@ -48,6 +50,22 @@ switch ($_GET['op']) {
         echo json_encode(['status' => $rspta ? 'success' : 'error', 'msg' => $rspta ? 'Proveedor actualizado correctamente' : 'Error al actualizar proveedor']);
         break;
 
+    case 'desactivar':
+        $rspta = $prov->desactivar($id);
+        echo json_encode([
+            'status' => $rspta ? 'success' : 'error',
+            'msg'    => $rspta ? 'Proveedor desactivado' : 'Error al desactivar proveedor'
+        ]);
+        break;
+
+    case 'activar':
+        $rspta = $prov->activar($id);
+        echo json_encode([
+            'status' => $rspta ? 'success' : 'error',
+            'msg'    => $rspta ? 'Proveedor activado' : 'Error al activar proveedor'
+        ]);
+        break;
+
     case 'mostrar':
         $rspta = $prov->mostrar($id);
         echo json_encode($rspta);
@@ -57,15 +75,21 @@ switch ($_GET['op']) {
         $rspta = $prov->listar();
         $data  = [];
         while ($reg = $rspta->fetch_object()) {
+            $estado = $reg->estado
+                ? '<span class="badge badge-success">Activo</span>'
+                : '<span class="badge badge-danger">Inactivo</span>';
+            $botones = $reg->estado
+                ? '<button class="btn btn-sm btn-primary btn-edit" data-id="' . $reg->id . '"><i class="fa fa-edit"></i></button> '
+                  . '<button class="btn btn-sm btn-danger btn-deactivate" data-id="' . $reg->id . '"><i class="fa fa-trash"></i></button>'
+                : '<button class="btn btn-sm btn-success btn-activate" data-id="' . $reg->id . '"><i class="fa fa-check"></i></button>';
             $data[] = [
                 $reg->id,
                 htmlspecialchars($reg->ruc),
                 htmlspecialchars($reg->razon_social),
                 htmlspecialchars($reg->email),
                 htmlspecialchars($reg->telefono_movil),
-                $reg->estado
-                    ? '<span class="badge badge-success">Activo</span>'
-                    : '<span class="badge badge-danger">Inactivo</span>'
+                $estado,
+                $botones
             ];
         }
         echo json_encode(["data" => $data]);
@@ -76,5 +100,9 @@ switch ($_GET['op']) {
         while ($reg = $rspta->fetch_object()) {
             echo "<option value=\"{$reg->id}\">" . htmlspecialchars($reg->razon_social) . "</option>";
         }
+        break;
+
+    default:
+        echo json_encode(['status' => 'error', 'msg' => 'Operación no válida']);
         break;
 }
