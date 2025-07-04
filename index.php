@@ -13,8 +13,13 @@ if (file_exists(__DIR__ . '/vendor/autoload.php')) {
 require_once 'config/global.php';
 require_once 'config/Utilidades.php';
 
-// Obtener la URL desde el parámetro 'url' o establecer 'home' por defecto
-$url = isset($_GET['url']) ? $_GET['url'] : 'home';
+// Obtener la URL desde el parámetro 'url'
+// Si no viene especificada redirigimos al inicio de sesión
+$url = $_GET['url'] ?? '';
+if ($url === '') {
+    header('Location: ' . APP_URL . 'login');
+    exit();
+}
 
 // Separar la URL en segmentos
 $url = explode('/', $url);
