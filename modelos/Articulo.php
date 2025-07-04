@@ -242,7 +242,11 @@ SQL;
         for ($i = 1; $i <= 30; $i++) {
             $campos[] = "parte{$i}";
             $placeholders[] = '?';
-            $params[] = limpiarCadena($partes[$i - 1] ?? null);
+            if (isset($partes[$i - 1]) && trim($partes[$i - 1]) !== '') {
+                $params[] = limpiarCadena($partes[$i - 1]);
+            } else {
+                $params[] = null;
+            }
         }
         if ($id) {
             $set = array_map(fn($c) => "$c=?", $campos);

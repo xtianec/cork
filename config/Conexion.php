@@ -28,8 +28,17 @@ if (!function_exists('ejecutarConsulta')) {
         
         // Vincular los parámetros si existen
         if (!empty($params)) {
-            $types = str_repeat('s', count($params)); // Modificar según los tipos de los parámetros
-            $stmt->bind_param($types, ...$params);  // Desempaquetar el array de parámetros
+            $types = '';
+            foreach ($params as $p) {
+                if (is_int($p)) {
+                    $types .= 'i';
+                } elseif (is_float($p)) {
+                    $types .= 'd';
+                } else {
+                    $types .= 's';
+                }
+            }
+            $stmt->bind_param($types, ...$params);
         }
     
         // Ejecutar la consulta
@@ -107,7 +116,16 @@ if (!function_exists('ejecutarConsulta')) {
         }
 
         if (!empty($params)) {
-            $types = str_repeat('s', count($params));
+            $types = '';
+            foreach ($params as $p) {
+                if (is_int($p)) {
+                    $types .= 'i';
+                } elseif (is_float($p)) {
+                    $types .= 'd';
+                } else {
+                    $types .= 's';
+                }
+            }
             if (!$stmt->bind_param($types, ...$params)) {
                 error_log("Error en bind_param: " . $stmt->error);
                 return false;
