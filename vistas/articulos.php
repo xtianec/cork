@@ -85,6 +85,18 @@
               <textarea id="descripcion" name="descripcion" rows="2" class="form-control"></textarea>
             </div>
 
+            <!-- Partes -->
+            <div class="form-group">
+              <label>Partes</label>
+              <table class="table table-sm" id="tblPartes">
+                <thead>
+                  <tr><th>Parte</th><th></th></tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+              <button type="button" id="btnAddParte" class="btn btn-secondary btn-sm">Agregar Parte</button>
+            </div>
+
             <!-- Selects -->
             <div class="form-row">
               <div class="form-group col-md-3">
