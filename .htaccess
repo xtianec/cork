@@ -1,9 +1,22 @@
 RewriteEngine On
+RewriteBase /cork/
 
-# Evitar reescritura si el recurso existe
+# Sirve archivos/dirs reales
 RewriteCond %{REQUEST_FILENAME} -f [OR]
 RewriteCond %{REQUEST_FILENAME} -d
 RewriteRule ^ - [L]
 
-# Enviar todas las demás peticiones al front-controller
-RewriteRule ^(.*)$ index.php?url=$1 [QSA,L]
+# → vistas/<page>.php si existe
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{DOCUMENT_ROOT}/cork/vistas/$1.php -f
+RewriteRule ^([^/]+)/?$ vistas/$1.php [L]
+
+# Cargar vistas escribiendo la extensión
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule ^(.+?)/?$ $1.php [L]
+
+# Resto al front-controller
+RewriteRule ^(.+)$ index.php?url=$1 [QSA,L]
