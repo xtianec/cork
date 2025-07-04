@@ -4,16 +4,22 @@
 <?php require 'layout/sidebar.php'; ?>
 
 <div class="container-fluid pt-4">
-  <!-- Título y botón -->
-  <div class="row mb-3">
-    <div class="col">
-      <h3 class="text-themecolor"><?= $pageTitle ?></h3>
+  <!-- Encabezado -->
+  <div class="row page-titles align-items-center">
+    <div class="col-md-5">
+      <h3 class="text-themecolor mb-0"><?= $pageTitle ?></h3>
     </div>
-    <div class="col text-right">
-      <button id="btnNuevoArticulo" class="btn btn-success">
-        <i class="fa fa-plus"></i> Nuevo Artículo
-      </button>
+    <div class="col-md-7 text-md-end mt-3 mt-md-0">
+      <ol class="breadcrumb float-md-right mb-0">
+        <li class="breadcrumb-item"><a href="<?= APP_URL ?>">Inicio</a></li>
+        <li class="breadcrumb-item active">Artículos</li>
+      </ol>
     </div>
+  </div>
+  <div class="d-flex justify-content-end mb-3">
+    <button id="btnNuevoArticulo" class="btn btn-success">
+      <i class="fa fa-plus"></i> Nuevo Artículo
+    </button>
   </div>
 
   <!-- Pestañas -->
@@ -33,6 +39,7 @@
     <div class="tab-pane fade show active" id="lista-articulos">
       <div class="card shadow-sm">
         <div class="card-body p-0">
+          <div class="table-responsive">
           <table id="tblArticulos" class="table table-striped table-bordered mb-0" style="width:100%">
             <thead>
               <tr>
@@ -44,14 +51,15 @@
                 <th>Línea</th>
                 <th>Sub-línea</th>
                 <th>UM</th>
-                <th>Stock</th>
-                <th>Precio Vta.</th>
+                <th class="text-end">Stock</th>
+                <th class="text-end">Precio Vta.</th>
                 <th>Estado</th>
-                <th>Opciones</th>
+                <th class="text-center">Opciones</th>
               </tr>
             </thead>
             <tbody></tbody>
           </table>
+          </div>
         </div>
       </div>
     </div>
@@ -60,7 +68,7 @@
     <div class="tab-pane fade" id="registro-articulo">
       <div class="card shadow-sm">
         <div class="card-body">
-          <form id="formArticulo" enctype="multipart/form-data" novalidate>
+          <form id="formArticulo" enctype="multipart/form-data" novalidate autocomplete="off">
               <input type="hidden" name="id" value="">
               <input type="hidden" name="parte_id" value="">
 
