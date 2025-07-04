@@ -1,5 +1,5 @@
 // vistas/js/articulos.js
-;(function ($) {
+; (function ($) {
   // URL base inyectada en la vista antes de este script
   const BASE_URL = window.BASE_URL || '';
   const ENDPOINTS = {
@@ -23,7 +23,8 @@
     $imgPreview: $('#imgPreview'),
     $fileInput: $('#imagen'),
     $tblPartes: $('#tblPartes tbody'),
-    $btnAddParte: $('#btnAddParte')
+    $btnAddParte: $('#btnAddParte'),
+    $btnCancel: $('#btnCancel')
   };
 
   /**
@@ -41,7 +42,7 @@
   }
 
   function updateParteIndexes() {
-    selectors.$tblPartes.find('tr').each(function(i){
+    selectors.$tblPartes.find('tr').each(function (i) {
       $(this).find('td').eq(0).text(i + 1);
     });
   }
@@ -54,6 +55,7 @@
     selectors.$tblPartes.append($tr);
     updateParteIndexes();
   }
+
 
   /**
    * Muestra el formulario: limpia o carga datos
@@ -68,7 +70,7 @@
     (data.partes || []).forEach(p => addParteRow(p));
     updateParteIndexes();
     // Rellenar inputs de texto y números
-    ['codigo','numero_parte','nombre','descripcion','stock_minimo','stock_maximo','precio_costo','precio_venta'].forEach(name => {
+    ['codigo', 'numero_parte', 'nombre', 'descripcion', 'stock_minimo', 'stock_maximo', 'precio_costo', 'precio_venta'].forEach(name => {
       const $f = selectors.$form.find(`[name="${name}"]`);
       if ($f.length && data[name] !== undefined) $f.val(data[name]);
     });
@@ -93,9 +95,9 @@
         error: xhr => console.error('DataTable AJAX error:', xhr.responseText)
       },
       columns: [
-        { data: 0 },{ data: 1 },{ data: 2 },{ data: 3, orderable: false },
-        { data: 4 },{ data: 5 },{ data: 6 },{ data: 7 },
-        { data: 8 },{ data: 9 },{ data: 10 },{ data: 11, orderable: false }
+        { data: 0 }, { data: 1 }, { data: 2 }, { data: 3, orderable: false },
+        { data: 4 }, { data: 5 }, { data: 6 }, { data: 7 },
+        { data: 8 }, { data: 9 }, { data: 10 }, { data: 11, orderable: false }
       ],
       language: { loadingRecords: 'Cargando...', zeroRecords: 'No hay artículos', paginate: { previous: '‹', next: '›' } },
       responsive: true,
@@ -103,12 +105,12 @@
     });
 
     // Facilitar número: seleccionar contenido al foco
-    selectors.$form.find('input[type=number]').on('focus', function() { this.select(); });
+    selectors.$form.find('input[type=number]').on('focus', function () { this.select(); });
 
     // Botón Nuevo artículo
     selectors.$btnNuevo.click(() => showForm());
     selectors.$btnAddParte.click(() => addParteRow());
-    selectors.$tblPartes.on('click', '.btn-del-parte', function(){
+    selectors.$tblPartes.on('click', '.btn-del-parte', function () {
       $(this).closest('tr').remove();
       updateParteIndexes();
     });
@@ -122,10 +124,10 @@
     });
 
     // Botón Cancelar
-    selectors.$form.on('click', 'button[type=button]', e => {
-      e.preventDefault(); selectors.$tabLista.tab('show');
+    selectors.$btnCancel.click(function (e) {
+      e.preventDefault();
+      selectors.$tabLista.tab('show');
     });
-
     // Cambiar sublínea al cambiar línea
     selectors.$selLinea.change(() => fillSelect(selectors.$selSublinea, 'sublinea', { linea_id: selectors.$selLinea.val() }, '-- Selecciona Sub-línea --'));
 
@@ -138,17 +140,17 @@
     function validateForm() {
       const codigo = selectors.$form.find('[name=codigo]').val().trim();
       const nombre = selectors.$form.find('[name=nombre]').val().trim();
-      if (!codigo) { Swal.fire('Atención','El código es obligatorio','warning'); return false; }
-      if (!nombre) { Swal.fire('Atención','El nombre es obligatorio','warning'); return false; }
-      if (!selectors.$selMarca.val()) { Swal.fire('Atención','Debe seleccionar una marca','warning'); return false; }
-      if (!selectors.$selLinea.val()) { Swal.fire('Atención','Debe seleccionar una línea','warning'); return false; }
-      if (!selectors.$selUnidad.val()) { Swal.fire('Atención','Debe seleccionar unidad de medida','warning'); return false; }
+      if (!codigo) { Swal.fire('Atención', 'El código es obligatorio', 'warning'); return false; }
+      if (!nombre) { Swal.fire('Atención', 'El nombre es obligatorio', 'warning'); return false; }
+      if (!selectors.$selMarca.val()) { Swal.fire('Atención', 'Debe seleccionar una marca', 'warning'); return false; }
+      if (!selectors.$selLinea.val()) { Swal.fire('Atención', 'Debe seleccionar una línea', 'warning'); return false; }
+      if (!selectors.$selUnidad.val()) { Swal.fire('Atención', 'Debe seleccionar unidad de medida', 'warning'); return false; }
       // Validar números no negativos
       let isValid = true;
-      ['stock_minimo','stock_maximo','precio_costo','precio_venta'].forEach(name => {
+      ['stock_minimo', 'stock_maximo', 'precio_costo', 'precio_venta'].forEach(name => {
         const val = parseFloat(selectors.$form.find(`[name="${name}"]`).val());
         if (isNaN(val) || val < 0) {
-          Swal.fire('Atención', `El valor de ${name.replace('_',' ')} no puede ser negativo`,`warning`);
+          Swal.fire('Atención', `El valor de ${name.replace('_', ' ')} no puede ser negativo`, `warning`);
           isValid = false;
         }
       });
@@ -168,21 +170,21 @@
         contentType: false,
         dataType: 'json'
       }).done(resp => {
-        Swal.fire(resp.status==='success'?'¡Éxito!':'Error',resp.msg,resp.status);
-        if (resp.status==='success') { table.ajax.reload(null,false); selectors.$tabLista.tab('show'); }
+        Swal.fire(resp.status === 'success' ? '¡Éxito!' : 'Error', resp.msg, resp.status);
+        if (resp.status === 'success') { table.ajax.reload(null, false); selectors.$tabLista.tab('show'); }
       });
     });
 
     // Activar/desactivar artículo
     selectors.$table.on('click', '.btn-deactivate, .btn-activate', function () {
       const isDeactivate = $(this).hasClass('btn-deactivate');
-      const action = isDeactivate?'desactivar':'activar';
-      Swal.fire({ title:isDeactivate?'¿Desactivar artículo?':'¿Activar artículo?', icon:isDeactivate?'warning':'question', showCancelButton:true, confirmButtonText:'Sí' })
+      const action = isDeactivate ? 'desactivar' : 'activar';
+      Swal.fire({ title: isDeactivate ? '¿Desactivar artículo?' : '¿Activar artículo?', icon: isDeactivate ? 'warning' : 'question', showCancelButton: true, confirmButtonText: 'Sí' })
         .then(r => {
           if (r.isConfirmed) {
             const id = $(this).data('id');
-            $.post(`${BASE_URL}controlador/${ENDPOINTS.articulo}?op=${action}`,{id},'json')
-              .done(x=>{Swal.fire('',x.msg,x.status);table.ajax.reload(null,false);});
+            $.post(`${BASE_URL}controlador/${ENDPOINTS.articulo}?op=${action}`, { id }, 'json')
+              .done(x => { Swal.fire('', x.msg, x.status); table.ajax.reload(null, false); });
           }
         });
     });
