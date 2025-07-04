@@ -1,15 +1,20 @@
 RewriteEngine On
-RewriteBase /cork/
+
+# La base se determina automáticamente según la carpeta
+# donde se encuentre este archivo. De esta manera el
+# proyecto puede desplegarse en cualquier ruta sin
+# modificar las reglas.
+RewriteBase /
 
 # Sirve archivos/dirs reales
 RewriteCond %{REQUEST_FILENAME} -f [OR]
 RewriteCond %{REQUEST_FILENAME} -d
 RewriteRule ^ - [L]
 
-# → vistas/<page>.php si existe
+# → vistas/<pagina>.php si existe
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteCond %{DOCUMENT_ROOT}/cork/vistas/$1.php -f
+RewriteCond %{REQUEST_FILENAME}/../vistas/$1.php -f
 RewriteRule ^([^/]+)/?$ vistas/$1.php [L]
 
 # Cargar vistas escribiendo la extensión
