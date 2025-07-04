@@ -4,14 +4,6 @@
 // Iniciar la sesión
 session_start();
 
-// Soporte para el servidor embebido de PHP: servir archivos estáticos
-if (PHP_SAPI === 'cli-server') {
-    $file = __DIR__ . parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-    if (is_file($file)) {
-        return false; // Dejar que el servidor embebido entregue el recurso
-    }
-}
-
 // Autoload de Composer (si está disponible)
 if (file_exists(__DIR__ . '/vendor/autoload.php')) {
     require_once __DIR__ . '/vendor/autoload.php';
@@ -21,30 +13,8 @@ if (file_exists(__DIR__ . '/vendor/autoload.php')) {
 require_once 'config/global.php';
 require_once 'config/Utilidades.php';
 
-// Obtener la ruta solicitada
-$url = $_GET['url'] ?? '';
-
-// Si no viene por parámetro, intentar deducirla desde REQUEST_URI
-if ($url === '') {
-    $reqPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-    $base    = rtrim(APP_URL, '/');
-
-    // Detectar automáticamente el directorio base si no está especificado
-    if ($base === '') {
-        $base = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
-    }
-
-    if ($base !== '' && strpos($reqPath, $base) === 0) {
-        $reqPath = substr($reqPath, strlen($base));
-    }
-
-    $url = trim($reqPath, '/');
-
-    if ($url === '') {
-        require 'vistas/login.php';
-        return;
-    }
-}
+// Obtener la URL desde el parámetro 'url' o establecer 'home' por defecto
+$url = isset($_GET['url']) ? $_GET['url'] : 'home';
 
 // Separar la URL en segmentos
 $url = explode('/', $url);
@@ -63,11 +33,6 @@ $controllerPath = 'controlador/' . $controllerName . '.php';
 
 // Verificar si el archivo del controlador existe
 if (file_exists($controllerPath)) {
-    // Ajustar "op" para controladores de tipo script
-    if (!isset($_REQUEST['op']) && $method !== 'index') {
-        $_GET['op'] = $_REQUEST['op'] = $method;
-    }
-
     require_once $controllerPath;
 
     // Verificar si la clase del controlador existe
@@ -84,7 +49,9 @@ if (file_exists($controllerPath)) {
             echo 'Error 404: Método no encontrado';
         }
     } else {
-        // Controlador de tipo script ya ejecutado al incluir el archivo
+        // Clase del controlador no encontrada
+        logError('Controlador no encontrado: ' . $controllerName);
+        echo 'Error 404: Controlador no encontrado';
     }
 } else {
     // Archivo del controlador no encontrado
