@@ -40,11 +40,19 @@
       .fail(xhr => console.error(`Error cargando select ${tipo}:`, xhr));
   }
 
+  function updateParteIndexes() {
+    selectors.$tblPartes.find('tr').each(function(i){
+      $(this).find('td').eq(0).text(i + 1);
+    });
+  }
+
   function addParteRow(value = '') {
     const $tr = $('<tr>');
+    $tr.append('<td></td>');
     $tr.append(`<td><input type="text" name="partes[]" class="form-control form-control-sm" value="${value}"></td>`);
     $tr.append('<td><button type="button" class="btn btn-sm btn-danger btn-del-parte">&times;</button></td>');
     selectors.$tblPartes.append($tr);
+    updateParteIndexes();
   }
 
   /**
@@ -58,6 +66,7 @@
     selectors.$fileInput.next('.custom-file-label').text('Selecciona archivo…');
     selectors.$tblPartes.empty();
     (data.partes || []).forEach(p => addParteRow(p));
+    updateParteIndexes();
     // Rellenar inputs de texto y números
     ['codigo','numero_parte','nombre','descripcion','stock_minimo','stock_maximo','precio_costo','precio_venta'].forEach(name => {
       const $f = selectors.$form.find(`[name="${name}"]`);
@@ -101,6 +110,7 @@
     selectors.$btnAddParte.click(() => addParteRow());
     selectors.$tblPartes.on('click', '.btn-del-parte', function(){
       $(this).closest('tr').remove();
+      updateParteIndexes();
     });
 
     // Botón Editar artículo
