@@ -74,15 +74,16 @@
       const $f = selectors.$form.find(`[name="${name}"]`);
       if ($f.length && data[name] !== undefined) $f.val(data[name]);
     });
-    // Carga de selects en secuencia
-    fillSelect(selectors.$selMarca, 'marca', {}, '-- Selecciona Marca --', data.marca_id)
-      .then(() => fillSelect(selectors.$selLinea, 'linea', {}, '-- Selecciona Línea --', data.linea_id))
-      .then(() => fillSelect(selectors.$selSublinea, 'sublinea', { linea_id: data.linea_id }, '-- Selecciona Sub-línea --', data.sublinea_id))
-      .then(() => fillSelect(selectors.$selUnidad, 'unidad', {}, '-- Selecciona U. Medida --', data.unidad_medida_id))
-      .always(() => {
-        if (data.imagen) selectors.$imgPreview.attr('src', BASE_URL + data.imagen).show();
-        selectors.$tabRegistro.tab('show');
-      });
+    // Carga de selects en paralelo
+    $.when(
+      fillSelect(selectors.$selMarca, 'marca', {}, '-- Selecciona Marca --', data.marca_id),
+      fillSelect(selectors.$selLinea, 'linea', {}, '-- Selecciona Línea --', data.linea_id),
+      fillSelect(selectors.$selSublinea, 'sublinea', { linea_id: data.linea_id }, '-- Selecciona Sub-línea --', data.sublinea_id),
+      fillSelect(selectors.$selUnidad, 'unidad', {}, '-- Selecciona U. Medida --', data.unidad_medida_id)
+    ).always(() => {
+      if (data.imagen) selectors.$imgPreview.attr('src', BASE_URL + data.imagen).show();
+      selectors.$tabRegistro.tab('show');
+    });
   }
 
   $(function () {
@@ -98,6 +99,10 @@
         { data: 0 }, { data: 1 }, { data: 2 }, { data: 3, orderable: false },
         { data: 4 }, { data: 5 }, { data: 6 }, { data: 7 },
         { data: 8 }, { data: 9 }, { data: 10 }, { data: 11, orderable: false }
+      ],
+      columnDefs: [
+        { targets: [8, 9], className: 'text-end' },
+        { targets: 11, className: 'text-center' }
       ],
       language: { loadingRecords: 'Cargando...', zeroRecords: 'No hay artículos', paginate: { previous: '‹', next: '›' } },
       responsive: true,
@@ -131,9 +136,17 @@
     // Cambiar sublínea al cambiar línea
     selectors.$selLinea.change(() => fillSelect(selectors.$selSublinea, 'sublinea', { linea_id: selectors.$selLinea.val() }, '-- Selecciona Sub-línea --'));
 
-    // Preview nombre de archivo
+    // Preview nombre de archivo e imagen
     selectors.$fileInput.change(function () {
-      $(this).next('.custom-file-label').text(this.files[0]?.name || 'Selecciona archivo…');
+      const file = this.files[0];
+      $(this).next('.custom-file-label').text(file ? file.name : 'Selecciona archivo…');
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = e => selectors.$imgPreview.attr('src', e.target.result).show();
+        reader.readAsDataURL(file);
+      } else {
+        selectors.$imgPreview.hide();
+      }
     });
 
     // Validación base antes de AJAX
