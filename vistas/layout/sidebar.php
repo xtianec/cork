@@ -120,7 +120,7 @@ foreach ($menu as $key => $section) {
         <?php
         foreach ($section['items'] as $item) {
             $isActive = $item['view'] === $current ? 'active' : '';
-            echo "<li class=\"$isActive\"><a href=\"" . APP_URL . $item['view'] . "\">" . htmlspecialchars($item['label']) . "</a></li>";
+            echo "<li class=\"$isActive\"><a href=\"" . APP_URL . "index.php?url=" . $item['view'] . "\">" . htmlspecialchars($item['label']) . "</a></li>";
         }
         ?>
                 </ul>
