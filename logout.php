@@ -1,5 +1,6 @@
 <?php
 session_start();
 session_destroy();
-header('Location: ' . '/cork/login');
+require_once __DIR__ . '/config/global.php';
+header('Location: ' . APP_URL . 'login');
 exit();
