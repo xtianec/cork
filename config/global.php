@@ -19,9 +19,9 @@ define("DB_ENCODE", "utf8");
 // Nombre del proyecto
 define("PRO_NOMBRE", "PACIFIC COMPRESSOR");
 // URL base de la aplicación
-// Detectar automáticamente la URL base sin importar desde dónde se incluya este archivo
+// Se detecta automáticamente sin importar desde dónde se incluya
 $scriptPath = dirname($_SERVER['SCRIPT_NAME'] ?? '');
-$basePath = preg_replace('#/vistas(/.*)?$#', '', $scriptPath); // elimina /vistas si se accede directamente
+$basePath = preg_replace('#/(vistas|controlador)(/.*)?$#', '', $scriptPath);
 $basePath = rtrim($basePath, '/');
 define('APP_URL', $basePath ? $basePath . '/' : '/');
 
