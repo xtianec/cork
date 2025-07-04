@@ -161,7 +161,7 @@
               <button type="submit" class="btn btn-primary px-4">
                 <i class="fa fa-save"></i> Guardar
               </button>
-              <button type="button" class="btn btn-secondary px-4" data-toggle="tab" href="#lista-articulos">
+              <button type="button" id="btnCancel" class="btn btn-secondary px-4" data-toggle="tab" href="#lista-articulos">
                 Cancelar
               </button>
             </div>
