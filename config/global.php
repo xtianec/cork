@@ -19,7 +19,9 @@ define("DB_ENCODE", "utf8");
 // Nombre del proyecto
 define("PRO_NOMBRE", "PACIFIC COMPRESSOR");
 // URL base de la aplicación
-define("APP_URL", "/cork/");
+// Detectar automáticamente la URL base de la aplicación
+$basePath = rtrim(dirname($_SERVER['SCRIPT_NAME'] ?? ''), '/');
+define('APP_URL', $basePath ? $basePath . '/' : '/');
 
 
 
