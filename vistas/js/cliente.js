@@ -57,26 +57,31 @@
     // Ubigeo Perú
     let ubigeo = null;
     fetch(BASE_URL + 'data/ubigeo_peru.json')
-      .then(r=> r.json())
-      .then(data=>{
+      .then(r => r.ok ? r.json() : null)
+      .then(data => {
+        if(!data) return;
         ubigeo = data;
         const deps = Object.keys(ubigeo).sort();
         deps.forEach(d => $('#lista-departamentos').append(`<option>${d}</option>`));
-      });
+      })
+      .catch(()=>{ /* dataset opcional */ });
 
     $('input[name=departamento]').on('input',function(){
-      const d = this.value, provs = ubigeo[d]? Object.keys(ubigeo[d]).sort(): [];
+      if(!ubigeo) return;
+      const d = this.value,
+            provs = ubigeo[d] ? Object.keys(ubigeo[d]).sort() : [];
       $('#lista-provincias').empty();
-      provs.forEach(p=> $('#lista-provincias').append(`<option>${p}</option>`));
+      provs.forEach(p => $('#lista-provincias').append(`<option>${p}</option>`));
       $('#lista-distritos').empty();
       $('input[name=distrito]').val('');
     });
     $('input[name=provincia]').on('input',function(){
+      if(!ubigeo) return;
       const d = $('input[name=departamento]').val(),
             p = this.value,
-            dist = ubigeo[d] && ubigeo[d][p]? ubigeo[d][p]: [];
+            dist = ubigeo[d] && ubigeo[d][p] ? ubigeo[d][p] : [];
       $('#lista-distritos').empty();
-      dist.sort().forEach(x=> $('#lista-distritos').append(`<option>${x}</option>`));
+      dist.sort().forEach(x => $('#lista-distritos').append(`<option>${x}</option>`));
     });
 
     // Botones tabla
