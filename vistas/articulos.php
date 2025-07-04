@@ -187,4 +187,4 @@
 <script>
   window.BASE_URL = '<?= APP_URL ?>';
 </script>
-<script src="<?= APP_URL ?>vistas/js/articulos.js"></script>
+<script src="<?= APP_URL ?>vistas/js/articulos.js" defer></script>
