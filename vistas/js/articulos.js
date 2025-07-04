@@ -1,5 +1,7 @@
 // vistas/js/articulos.js
 ; (function ($) {
+  'use strict';
+
   // URL base inyectada en la vista antes de este script
   const BASE_URL = window.BASE_URL || '';
   const ENDPOINTS = {
@@ -28,13 +30,29 @@
   };
 
   /**
-   * Llena un <select> con opciones (HTML) del backend.
+   * Caché de opciones para los <select>.
+   * Evita repetir llamadas AJAX cuando los datos ya fueron cargados.
+   */
+  const selectCache = { marca: '', linea: '', unidad: '', sublinea: {} };
+
+  /**
+   * Llena un <select> con opciones del backend utilizando caché.
    */
   function fillSelect($sel, tipo, params = {}, placeholder, selected = '') {
-    const url = `${BASE_URL}controlador/${ENDPOINTS[tipo]}?op=select`;
+    const key = tipo === 'sublinea' ? (params.linea_id || 0) : tipo;
+    const cached = tipo === 'sublinea' ? selectCache.sublinea[key] : selectCache[tipo];
     $sel.empty().append($('<option>').val('').text(placeholder));
+    if (cached) {
+      $sel.append(cached);
+      if (selected) $sel.val(selected);
+      return $.Deferred().resolve();
+    }
+
+    const url = `${BASE_URL}controlador/${ENDPOINTS[tipo]}?op=select`;
     return $.get(url, params)
       .done(html => {
+        if (tipo === 'sublinea') selectCache.sublinea[key] = html;
+        else selectCache[tipo] = html;
         $sel.append(html);
         if (selected) $sel.val(selected);
       })
@@ -108,6 +126,11 @@
       responsive: true,
       autoWidth: false
     });
+
+    // Precargar selects principales
+    fillSelect(selectors.$selMarca, 'marca', {}, '-- Selecciona Marca --');
+    fillSelect(selectors.$selLinea, 'linea', {}, '-- Selecciona Línea --');
+    fillSelect(selectors.$selUnidad, 'unidad', {}, '-- Selecciona U. Medida --');
 
     // Facilitar número: seleccionar contenido al foco
     selectors.$form.find('input[type=number]').on('focus', function () { this.select(); });
