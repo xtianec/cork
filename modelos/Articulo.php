@@ -3,15 +3,16 @@ require_once __DIR__ . '/../config/Conexion.php';
 
 class Articulo
 {
-    public function insertar(array $data, string $imagenPath)
+    public function insertar(array $data, string $imagenPath, array $partes)
     {
+        $parteId = $this->savePartes($partes);
         $sql = "INSERT INTO articulo
             (codigo, numero_parte, nombre, descripcion,
-             marca_id, linea_id, sublinea_id, unidad_medida_id,
+             marca_id, linea_id, sublinea_id, unidad_medida_id, parte_id,
              stock_minimo, stock_maximo,
              precio_costo, precio_venta,
              stock_actual, imagen, estado, created_at, updated_at)
-          VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,1,NOW(),NOW())";
+          VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,1,NOW(),NOW())";
         $params = [
             limpiarCadena($data['codigo']),
             limpiarCadena($data['numero_parte']),
@@ -21,6 +22,7 @@ class Articulo
             limpiarCadena($data['linea_id']),
             limpiarCadena($data['sublinea_id'] ?: 0),
             limpiarCadena($data['unidad_medida_id']),
+            $parteId,
             limpiarCadena($data['stock_minimo']),
             limpiarCadena($data['stock_maximo']),
             limpiarCadena($data['precio_costo']),
@@ -31,7 +33,7 @@ class Articulo
         return ejecutarConsulta($sql, $params);
     }
 
-    public function editar(array $data, ?string $imagenPath = null)
+    public function editar(array $data, ?string $imagenPath = null, array $partes = [])
     {
         $setImg = $imagenPath ? ", imagen = ?" : "";
         $sql = "UPDATE articulo SET
@@ -43,6 +45,7 @@ class Articulo
             linea_id         = ?,
             sublinea_id      = ?,
             unidad_medida_id = ?,
+            parte_id         = ?,
             stock_minimo     = ?,
             stock_maximo     = ?,
             precio_costo     = ?,
@@ -59,6 +62,7 @@ class Articulo
             limpiarCadena($data['linea_id']),
             limpiarCadena($data['sublinea_id'] ?: 0),
             limpiarCadena($data['unidad_medida_id']),
+            $this->savePartes($partes, $data['parte_id'] ?? null),
             limpiarCadena($data['stock_minimo']),
             limpiarCadena($data['stock_maximo']),
             limpiarCadena($data['precio_costo']),
@@ -228,5 +232,38 @@ SQL;
             ["%$q%", "%$q%", $linea, $linea, $sub, $sub, $marca, $marca]
         );
         return (int)($row['total'] ?? 0);
+    }
+
+    private function savePartes(array $partes, ?int $id = null): ?int
+    {
+        $campos = [];
+        $placeholders = [];
+        $params = [];
+        for ($i = 1; $i <= 30; $i++) {
+            $campos[] = "parte{$i}";
+            $placeholders[] = '?';
+            $params[] = limpiarCadena($partes[$i - 1] ?? null);
+        }
+        if ($id) {
+            $set = array_map(fn($c) => "$c=?", $campos);
+            $sql = "UPDATE parte SET " . implode(',', $set) . ", updated_at=NOW() WHERE id=?";
+            $params[] = $id;
+            return ejecutarConsulta($sql, $params) ? $id : null;
+        }
+        $sql = "INSERT INTO parte(" . implode(',', $campos) . ",created_at,updated_at) VALUES(" . implode(',', $placeholders) . ",NOW(),NOW())";
+        return ejecutarConsulta_retornarID($sql, $params);
+    }
+
+    public function obtenerPartes(int $id): array
+    {
+        if (!$id) return [];
+        $row = ejecutarConsultaSimpleFila("SELECT * FROM parte WHERE id=?", [$id]);
+        if (!$row) return [];
+        $res = [];
+        for ($i = 1; $i <= 30; $i++) {
+            $k = 'parte' . $i;
+            if (!empty($row[$k])) $res[] = $row[$k];
+        }
+        return $res;
     }
 }

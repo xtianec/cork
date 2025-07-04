@@ -42,7 +42,8 @@ switch ($op) {
             );
             $imagenPath = "uploads/{$newName}";
         }
-        $ok = $mc->insertar($_POST, $imagenPath);
+        $partes = $_POST['partes'] ?? [];
+        $ok = $mc->insertar($_POST, $imagenPath, $partes);
         echo json_encode([
             'status' => $ok ? 'success' : 'error',
             'msg'    => $ok ? 'Artículo creado correctamente' : 'Error al crear artículo'
@@ -60,7 +61,8 @@ switch ($op) {
             );
             $imagenPath = "uploads/{$newName}";
         }
-        $ok = $mc->editar($_POST, $imagenPath);
+        $partes = $_POST['partes'] ?? [];
+        $ok = $mc->editar($_POST, $imagenPath, $partes);
         echo json_encode([
             'status' => $ok ? 'success' : 'error',
             'msg'    => $ok ? 'Artículo actualizado correctamente' : 'Error al actualizar artículo'
@@ -85,6 +87,7 @@ switch ($op) {
 
     case 'mostrar':
         $row = $mc->mostrar((int)($_POST['id'] ?? 0));
+        $row['partes'] = $mc->obtenerPartes((int)($row['parte_id'] ?? 0));
         echo json_encode($row);
         break;
 

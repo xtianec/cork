@@ -21,7 +21,9 @@
     $selSublinea: $('#sublinea_id'),
     $selUnidad: $('#unidad_medida_id'),
     $imgPreview: $('#imgPreview'),
-    $fileInput: $('#imagen')
+    $fileInput: $('#imagen'),
+    $tblPartes: $('#tblPartes tbody'),
+    $btnAddParte: $('#btnAddParte')
   };
 
   /**
@@ -38,14 +40,24 @@
       .fail(xhr => console.error(`Error cargando select ${tipo}:`, xhr));
   }
 
+  function addParteRow(value = '') {
+    const $tr = $('<tr>');
+    $tr.append(`<td><input type="text" name="partes[]" class="form-control form-control-sm" value="${value}"></td>`);
+    $tr.append('<td><button type="button" class="btn btn-sm btn-danger btn-del-parte">&times;</button></td>');
+    selectors.$tblPartes.append($tr);
+  }
+
   /**
    * Muestra el formulario: limpia o carga datos
    */
   function showForm(data = {}) {
     selectors.$form[0].reset();
     selectors.$form.find('[name=id]').val(data.id || '');
+    selectors.$form.find('[name=parte_id]').val(data.parte_id || '');
     selectors.$imgPreview.hide();
     selectors.$fileInput.next('.custom-file-label').text('Selecciona archivo…');
+    selectors.$tblPartes.empty();
+    (data.partes || []).forEach(p => addParteRow(p));
     // Rellenar inputs de texto y números
     ['codigo','numero_parte','nombre','descripcion','stock_minimo','stock_maximo','precio_costo','precio_venta'].forEach(name => {
       const $f = selectors.$form.find(`[name="${name}"]`);
@@ -86,6 +98,10 @@
 
     // Botón Nuevo artículo
     selectors.$btnNuevo.click(() => showForm());
+    selectors.$btnAddParte.click(() => addParteRow());
+    selectors.$tblPartes.on('click', '.btn-del-parte', function(){
+      $(this).closest('tr').remove();
+    });
 
     // Botón Editar artículo
     selectors.$table.on('click', '.btn-edit', function () {

@@ -61,7 +61,8 @@
       <div class="card shadow-sm">
         <div class="card-body">
           <form id="formArticulo" enctype="multipart/form-data" novalidate>
-            <input type="hidden" name="id" value="">
+              <input type="hidden" name="id" value="">
+              <input type="hidden" name="parte_id" value="">
 
             <!-- Primera fila -->
             <div class="form-row">
@@ -83,6 +84,18 @@
             <div class="form-group">
               <label for="descripcion">Descripción</label>
               <textarea id="descripcion" name="descripcion" rows="2" class="form-control"></textarea>
+            </div>
+
+            <!-- Partes -->
+            <div class="form-group">
+              <label>Partes</label>
+              <table class="table table-sm" id="tblPartes">
+                <thead>
+                  <tr><th>Parte</th><th></th></tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+              <button type="button" id="btnAddParte" class="btn btn-secondary btn-sm">Agregar Parte</button>
             </div>
 
             <!-- Selects -->

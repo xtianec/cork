@@ -24,6 +24,48 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `parte`
+--
+
+CREATE TABLE `parte` (
+  `id` int(11) NOT NULL,
+  `parte1` varchar(100) DEFAULT NULL,
+  `parte2` varchar(100) DEFAULT NULL,
+  `parte3` varchar(100) DEFAULT NULL,
+  `parte4` varchar(100) DEFAULT NULL,
+  `parte5` varchar(100) DEFAULT NULL,
+  `parte6` varchar(100) DEFAULT NULL,
+  `parte7` varchar(100) DEFAULT NULL,
+  `parte8` varchar(100) DEFAULT NULL,
+  `parte9` varchar(100) DEFAULT NULL,
+  `parte10` varchar(100) DEFAULT NULL,
+  `parte11` varchar(100) DEFAULT NULL,
+  `parte12` varchar(100) DEFAULT NULL,
+  `parte13` varchar(100) DEFAULT NULL,
+  `parte14` varchar(100) DEFAULT NULL,
+  `parte15` varchar(100) DEFAULT NULL,
+  `parte16` varchar(100) DEFAULT NULL,
+  `parte17` varchar(100) DEFAULT NULL,
+  `parte18` varchar(100) DEFAULT NULL,
+  `parte19` varchar(100) DEFAULT NULL,
+  `parte20` varchar(100) DEFAULT NULL,
+  `parte21` varchar(100) DEFAULT NULL,
+  `parte22` varchar(100) DEFAULT NULL,
+  `parte23` varchar(100) DEFAULT NULL,
+  `parte24` varchar(100) DEFAULT NULL,
+  `parte25` varchar(100) DEFAULT NULL,
+  `parte26` varchar(100) DEFAULT NULL,
+  `parte27` varchar(100) DEFAULT NULL,
+  `parte28` varchar(100) DEFAULT NULL,
+  `parte29` varchar(100) DEFAULT NULL,
+  `parte30` varchar(100) DEFAULT NULL,
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  `updated_at` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `almacen_movimiento`
 --
 
@@ -133,6 +175,7 @@ CREATE TABLE `articulo` (
   `linea_id` int(11) DEFAULT NULL,
   `sublinea_id` int(11) DEFAULT NULL,
   `unidad_medida_id` int(11) NOT NULL,
+  `parte_id` int(11) DEFAULT NULL,
   `stock_minimo` int(11) NOT NULL DEFAULT 0,
   `stock_maximo` int(11) DEFAULT NULL,
   `precio_costo` decimal(14,2) NOT NULL DEFAULT 0.00,
@@ -148,13 +191,13 @@ CREATE TABLE `articulo` (
 -- Volcado de datos para la tabla `articulo`
 --
 
-INSERT INTO `articulo` (`id`, `codigo`, `numero_parte`, `nombre`, `descripcion`, `marca_id`, `linea_id`, `sublinea_id`, `unidad_medida_id`, `stock_minimo`, `stock_maximo`, `precio_costo`, `precio_venta`, `stock_actual`, `imagen`, `estado`, `created_at`, `updated_at`) VALUES
-(1, 'gsdfearsf', 'wwwww', 'efdaeefffffffffffffffffffffffff', 'sdffdghgfgfdsfgds', 1, 2, 1, 1, 1, 500, 4.00, 8.00, -1, 'uploads/art_6853a1f631130.jpg', 1, '2025-06-18 23:23:30', '2025-06-28 01:33:31'),
-(2, 'sasdasdf', 'sdfdfsaaaa', 'sfdasdfa', 'asfddfasfadssdfa', 1, 2, 1, 1, 2, 100, 12.70, 25.33, -4, '', 1, '2025-06-18 23:46:02', '2025-06-28 04:11:28'),
-(4, 'eferf', '34r34', 'efffsd', 'ffdfsfsddf', 1, 4, 2, 1, 5, 12, 20.00, 500.00, 50, '', 1, '2025-06-19 00:51:22', '2025-06-30 07:54:35'),
-(5, '2212344', '243234', '234234342324342', 'sdfdsdsf', 1, 2, 1, 3, 5, 6, 12.00, 15.00, 203, '', 1, '2025-06-19 00:55:18', '2025-06-28 05:30:38'),
-(6, 'aaaaaaaaaaaaaaa', 'aaaa', 'aaaaaa', 'aaaaaaaaaaaaaa', 5, 6, 4, 1, 5, 200, 5.00, 12.00, 12, 'uploads/art_68628c044b2b3.png', 1, '2025-06-30 08:07:16', '2025-06-30 08:08:54'),
-(7, '11', '22', 'COMPRESOR AIRES', 'SSS', 5, 6, 4, 1, 1, 12, 5.00, 12.00, 1, 'uploads/art_686366f47a392.png', 1, '2025-06-30 23:41:24', '2025-06-30 23:41:24');
+INSERT INTO `articulo` (`id`, `codigo`, `numero_parte`, `nombre`, `descripcion`, `marca_id`, `linea_id`, `sublinea_id`, `unidad_medida_id`, `parte_id`, `stock_minimo`, `stock_maximo`, `precio_costo`, `precio_venta`, `stock_actual`, `imagen`, `estado`, `created_at`, `updated_at`) VALUES
+(1, 'gsdfearsf', 'wwwww', 'efdaeefffffffffffffffffffffffff', 'sdffdghgfgfdsfgds', 1, 2, 1, 1, NULL, 1, 500, 4.00, 8.00, -1, 'uploads/art_6853a1f631130.jpg', 1, '2025-06-18 23:23:30', '2025-06-28 01:33:31'),
+(2, 'sasdasdf', 'sdfdfsaaaa', 'sfdasdfa', 'asfddfasfadssdfa', 1, 2, 1, 1, NULL, 2, 100, 12.70, 25.33, -4, '', 1, '2025-06-18 23:46:02', '2025-06-28 04:11:28'),
+(4, 'eferf', '34r34', 'efffsd', 'ffdfsfsddf', 1, 4, 2, 1, NULL, 5, 12, 20.00, 500.00, 50, '', 1, '2025-06-19 00:51:22', '2025-06-30 07:54:35'),
+(5, '2212344', '243234', '234234342324342', 'sdfdsdsf', 1, 2, 1, 3, NULL, 5, 6, 12.00, 15.00, 203, '', 1, '2025-06-19 00:55:18', '2025-06-28 05:30:38'),
+(6, 'aaaaaaaaaaaaaaa', 'aaaa', 'aaaaaa', 'aaaaaaaaaaaaaa', 5, 6, 4, 1, NULL, 5, 200, 5.00, 12.00, 12, 'uploads/art_68628c044b2b3.png', 1, '2025-06-30 08:07:16', '2025-06-30 08:08:54'),
+(7, '11', '22', 'COMPRESOR AIRES', 'SSS', 5, 6, 4, 1, NULL, 1, 12, 5.00, 12.00, 1, 'uploads/art_686366f47a392.png', 1, '2025-06-30 23:41:24', '2025-06-30 23:41:24');
 
 -- --------------------------------------------------------
 
@@ -1450,7 +1493,8 @@ ALTER TABLE `articulo`
   ADD KEY `marca_id` (`marca_id`),
   ADD KEY `linea_id` (`linea_id`),
   ADD KEY `sublinea_id` (`sublinea_id`),
-  ADD KEY `unidad_medida_id` (`unidad_medida_id`);
+  ADD KEY `unidad_medida_id` (`unidad_medida_id`),
+  ADD KEY `parte_id` (`parte_id`);
 
 --
 -- Indices de la tabla `asistencia`
@@ -1746,6 +1790,12 @@ ALTER TABLE `sublinea`
   ADD KEY `linea_id` (`linea_id`);
 
 --
+-- Indices de la tabla `parte`
+--
+ALTER TABLE `parte`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indices de la tabla `tipo_articulo`
 --
 ALTER TABLE `tipo_articulo`
@@ -1822,6 +1872,12 @@ ALTER TABLE `almacen_movimiento`
 --
 ALTER TABLE `articulo`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
+-- AUTO_INCREMENT de la tabla `parte`
+--
+ALTER TABLE `parte`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `asistencia`
@@ -2130,7 +2186,8 @@ ALTER TABLE `articulo`
   ADD CONSTRAINT `articulo_ibfk_1` FOREIGN KEY (`marca_id`) REFERENCES `marca` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
   ADD CONSTRAINT `articulo_ibfk_2` FOREIGN KEY (`linea_id`) REFERENCES `linea` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
   ADD CONSTRAINT `articulo_ibfk_3` FOREIGN KEY (`sublinea_id`) REFERENCES `sublinea` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
-  ADD CONSTRAINT `articulo_ibfk_4` FOREIGN KEY (`unidad_medida_id`) REFERENCES `unidad_medida` (`id`) ON UPDATE CASCADE;
+  ADD CONSTRAINT `articulo_ibfk_4` FOREIGN KEY (`unidad_medida_id`) REFERENCES `unidad_medida` (`id`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `articulo_ibfk_5` FOREIGN KEY (`parte_id`) REFERENCES `parte` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `asistencia`
