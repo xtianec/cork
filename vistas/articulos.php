@@ -91,7 +91,7 @@
               <label>Partes</label>
               <table class="table table-sm" id="tblPartes">
                 <thead>
-                  <tr><th>Parte</th><th></th></tr>
+                  <tr><th>#</th><th>Nombre</th><th></th></tr>
                 </thead>
                 <tbody></tbody>
               </table>
