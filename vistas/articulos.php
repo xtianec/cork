@@ -158,7 +158,7 @@
             <div class="form-group">
               <label for="imagen">Imagen</label>
               <div class="custom-file">
-                <input type="file" name="imagen" id="imagen" class="custom-file-input">
+                <input type="file" name="imagen" id="imagen" class="custom-file-input" accept="image/*">
                 <label class="custom-file-label" for="imagen">Selecciona archivo…</label>
               </div>
               <img id="imgPreview" src="#" class="img-thumbnail mt-2" style="max-height:120px; display:none;">
