@@ -9,7 +9,7 @@ $op   = $_GET['op'] ?? '';
 
 switch ($op) {
     case 'guardar':
-        $ok = $plan->insertar($_POST['plan_id'] ?? '', $_POST['plan_desc'] ?? '');
+        $ok = $plan->insertar($_POST['plan_desc'] ?? '');
         echo json_encode([
             'status' => $ok ? 'success' : 'error',
             'msg'    => $ok ? 'Plan registrado correctamente' : 'Error al registrar plan'
@@ -25,7 +25,7 @@ switch ($op) {
         break;
 
     case 'eliminar':
-        $ok = $plan->eliminar($_POST['plan_id'] ?? '');
+        $ok = $plan->eliminar($_POST['id'] ?? '');
         echo json_encode([
             'status' => $ok ? 'success' : 'error',
             'msg'    => $ok ? 'Plan eliminado' : 'Error al eliminar plan'
@@ -33,7 +33,11 @@ switch ($op) {
         break;
 
     case 'mostrar':
-        echo json_encode($plan->mostrar($_POST['plan_id'] ?? ''));
+        echo json_encode($plan->mostrar($_POST['id'] ?? ''));
+        break;
+
+    case 'combo':
+        echo json_encode($plan->listarCombo());
         break;
 
     case 'listar':

@@ -1,12 +1,23 @@
 // vistas/js/planServicio.js
 $(function(){
+  function loadPlanes(){
+    $.getJSON(BASE_URL+'controlador/PlanServicioController.php?op=combo',r=>{
+      const opts=r.map(p=>`<option value="${p.plan_id}">${p.plan_desc}</option>`).join('');
+      $('#formPlanesHoras select[name=plan_id],#formPlanesPrecios select[name=plan_id]').html(opts);
+    });
+  }
+
   function crud(cfg){
-    const table = $(cfg.table).DataTable({
-      ajax:{ url: BASE_URL+'controlador/'+cfg.ctrl+'?op=listar', dataSrc:'data' }
+    const table=$(cfg.table).DataTable({
+      ajax:{url:BASE_URL+'controlador/'+cfg.ctrl+'?op=listar',dataSrc:'data'}
     });
     $(cfg.btnNew).on('click',()=>{
       $(cfg.form)[0].reset();
       $(cfg.form+' [name=id]').val('');
+      if(cfg.ctrl==='PlanServicioController.php'){
+        $('#groupPlanId').hide();
+        $('#groupPlanId input').prop('disabled',true);
+      }
       $(cfg.modal+' .modal-title').text(cfg.title);
       $(cfg.modal).modal('show');
     });
@@ -16,6 +27,10 @@ $(function(){
         if(!r) return;
         Object.keys(r).forEach(k=>$(cfg.form+' [name='+k+']').val(r[k]));
         $(cfg.form+' [name=id]').val(id);
+        if(cfg.ctrl==='PlanServicioController.php'){
+          $('#groupPlanId').show();
+          $('#groupPlanId input').prop('disabled',true);
+        }
         $(cfg.modal+' .modal-title').text(cfg.title);
         $(cfg.modal).modal('show');
       },'json');
@@ -26,6 +41,7 @@ $(function(){
         .then(res=>{ if(res.isConfirmed){
           $.post(BASE_URL+'controlador/'+cfg.ctrl+'?op=eliminar',{id},resp=>{
             Swal.fire('',resp.msg,resp.status); table.ajax.reload();
+            if(cfg.ctrl==='PlanServicioController.php') loadPlanes();
           },'json');
         }});
     });
@@ -37,6 +53,7 @@ $(function(){
           $(cfg.modal).modal('hide');
           Swal.fire('Éxito',resp.msg,'success');
           table.ajax.reload();
+          if(cfg.ctrl==='PlanServicioController.php') loadPlanes();
         }else{
           Swal.fire('Error',resp.msg||'Ocurrió un error','error');
         }
@@ -44,6 +61,7 @@ $(function(){
     });
   }
 
+  loadPlanes();
   crud({table:'#tblPlanServicio',form:'#formPlanServicio',modal:'#modalPlanServicio',btnNew:'#btnNewServ',ctrl:'PlanServicioController.php',title:'Plan Servicio'});
   crud({table:'#tblPlanesHoras',form:'#formPlanesHoras',modal:'#modalPlanesHoras',btnNew:'#btnNewHoras',ctrl:'PlanesHorasController.php',title:'Plan Horas'});
   crud({table:'#tblPlanesPrecios',form:'#formPlanesPrecios',modal:'#modalPlanesPrecios',btnNew:'#btnNewPrecios',ctrl:'PlanesPreciosController.php',title:'Plan Precio'});
