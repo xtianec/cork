@@ -96,9 +96,9 @@
       </div>
       <div class="modal-body">
         <input type="hidden" name="id">
-        <div class="form-group">
+        <div class="form-group" id="groupPlanId">
           <label>ID</label>
-          <input type="text" name="plan_id" class="form-control" maxlength="2" required>
+          <input type="text" name="plan_id" class="form-control" maxlength="2">
         </div>
         <div class="form-group">
           <label>Descripción</label>
@@ -123,8 +123,8 @@
       <div class="modal-body">
         <input type="hidden" name="id">
         <div class="form-group">
-          <label>ID</label>
-          <input type="text" name="plan_id" class="form-control" maxlength="2" required>
+          <label>Plan</label>
+          <select name="plan_id" class="form-control"></select>
         </div>
         <div class="form-group">
           <label>Horas</label>
@@ -158,7 +158,7 @@
         </div>
         <div class="form-group">
           <label>Plan</label>
-          <input type="text" name="plan_id" class="form-control" maxlength="2" required>
+          <select name="plan_id" class="form-control"></select>
         </div>
         <div class="form-group">
           <label>Mano de Obra</label>

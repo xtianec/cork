@@ -3,12 +3,24 @@ require_once __DIR__ . '/../config/Conexion.php';
 
 class PlanServicio
 {
-    public function insertar($plan_id, $descripcion)
+    public function insertar($descripcion)
     {
-        $plan_id     = limpiarCadena($plan_id);
         $descripcion = limpiarCadena($descripcion);
+        $plan_id     = $this->generarId();
         $sql = "INSERT INTO planes_servicio (plan_id, plan_desc) VALUES (?, ?)";
         return ejecutarConsulta($sql, [$plan_id, $descripcion]);
+    }
+
+    private function generarId()
+    {
+        $sql  = "SELECT MAX(plan_id) AS max_id FROM planes_servicio";
+        $resp = ejecutarConsultaSimpleFila($sql);
+        $max  = $resp['max_id'] ?? null;
+        if (!$max) {
+            return 'A';
+        }
+        $next = chr(ord($max) + 1);
+        return $next;
     }
 
     public function editar($plan_id, $descripcion)
@@ -37,6 +49,12 @@ class PlanServicio
     {
         $sql = "SELECT plan_id, plan_desc FROM planes_servicio ORDER BY plan_id";
         return ejecutarConsulta($sql);
+    }
+
+    public function listarCombo()
+    {
+        $sql = "SELECT plan_id, plan_desc FROM planes_servicio ORDER BY plan_id";
+        return ejecutarConsultaArray($sql);
     }
 }
 ?>
