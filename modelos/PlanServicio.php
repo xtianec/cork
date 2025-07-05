@@ -16,11 +16,35 @@ class PlanServicio
         $sql  = "SELECT MAX(plan_id) AS max_id FROM planes_servicio";
         $resp = ejecutarConsultaSimpleFila($sql);
         $max  = $resp['max_id'] ?? null;
+
+        // Si no existe ningún registro empezamos desde 'A'
         if (!$max) {
             return 'A';
         }
-        $next = chr(ord($max) + 1);
-        return $next;
+
+        // Permitir IDs alfabéticos de hasta dos caracteres (A..Z, AA..ZZ)
+        $alphabet = range('A', 'Z');
+        $chars    = str_split($max);
+        $carry    = true;
+        for ($i = count($chars) - 1; $i >= 0 && $carry; $i--) {
+            $pos = array_search($chars[$i], $alphabet, true);
+            if ($pos === false) {
+                $chars[$i] = 'A';
+                $carry     = false;
+            } elseif ($pos === 25) { // Z
+                $chars[$i] = 'A';
+                $carry     = true;
+            } else {
+                $chars[$i] = $alphabet[$pos + 1];
+                $carry     = false;
+            }
+        }
+        if ($carry) {
+            array_unshift($chars, 'A');
+        }
+
+        // Limitar a 2 caracteres para evitar claves largas
+        return substr(implode('', $chars), -2);
     }
 
     public function editar($plan_id, $descripcion)
