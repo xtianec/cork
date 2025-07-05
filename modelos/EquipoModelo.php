@@ -61,4 +61,10 @@ class EquipoModelo
                  ORDER BY id DESC";
         return ejecutarConsulta($sql);
     }
+
+    public function listarCombo()
+    {
+        $sql = "SELECT id, nombre FROM equipo_modelo WHERE is_active = 1 ORDER BY nombre";
+        return ejecutarConsultaArray($sql);
+    }
 }
