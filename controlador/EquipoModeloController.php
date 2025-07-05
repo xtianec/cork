@@ -38,6 +38,9 @@ switch ($op) {
           'msg'   => $ok ? 'Modelo activado' : 'Error al activar modelo'
         ]);
         break;
+     case 'combo':
+        echo json_encode($mod->listarCombo());
+        break;
 
     case 'mostrar':
         echo json_encode($mod->mostrar($_POST['id']));
