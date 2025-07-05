@@ -7,6 +7,13 @@ $(function(){
     });
   }
 
+  function loadModelos(){
+    $.getJSON(BASE_URL+'controlador/EquipoModeloController.php?op=combo',r=>{
+      const opts=r.map(m=>`<option value="${m.id}">${m.nombre}</option>`).join('');
+      $('#formPlanesPrecios select[name=modelo_equipo_id],#formPlanesPreciosServ select[name=modelo_equipo_id]').html(opts);
+    });
+  }
+
   function crud(cfg){
     const table=$(cfg.table).DataTable({
       ajax:{url:BASE_URL+'controlador/'+cfg.ctrl+'?op=listar',dataSrc:'data'}
@@ -62,6 +69,7 @@ $(function(){
   }
 
   loadPlanes();
+  loadModelos();
   crud({table:'#tblPlanServicio',form:'#formPlanServicio',modal:'#modalPlanServicio',btnNew:'#btnNewServ',ctrl:'PlanServicioController.php',title:'Plan Servicio'});
   crud({table:'#tblPlanesHoras',form:'#formPlanesHoras',modal:'#modalPlanesHoras',btnNew:'#btnNewHoras',ctrl:'PlanesHorasController.php',title:'Plan Horas'});
   crud({table:'#tblPlanesPrecios',form:'#formPlanesPrecios',modal:'#modalPlanesPrecios',btnNew:'#btnNewPrecios',ctrl:'PlanesPreciosController.php',title:'Plan Precio'});

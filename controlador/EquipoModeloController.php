@@ -43,6 +43,10 @@ switch ($op) {
         echo json_encode($mod->mostrar($_POST['id']));
         break;
 
+    case 'combo':
+        echo json_encode($mod->listarCombo());
+        break;
+
     case 'listar':
         $rspta = $mod->listar();
         $data  = [];

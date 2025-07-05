@@ -154,7 +154,7 @@
         <input type="hidden" name="id">
         <div class="form-group">
           <label>Modelo Equipo</label>
-          <input type="number" name="modelo_equipo_id" class="form-control" required>
+          <select name="modelo_equipo_id" class="form-control"></select>
         </div>
         <div class="form-group">
           <label>Plan</label>
@@ -192,7 +192,7 @@
         <input type="hidden" name="id">
         <div class="form-group">
           <label>Modelo Equipo</label>
-          <input type="number" name="modelo_equipo_id" class="form-control" required>
+          <select name="modelo_equipo_id" class="form-control"></select>
         </div>
         <div class="row">
           <div class="col-md-4">

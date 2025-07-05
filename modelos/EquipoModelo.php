@@ -51,7 +51,7 @@ class EquipoModelo
 
     public function listar()
     {
-        $sql = "SELECT 
+        $sql = "SELECT
                     id,
                     nombre,
                     DATE_FORMAT(created_at, '%Y-%m-%d %H:%i') AS created_at,
@@ -60,5 +60,11 @@ class EquipoModelo
                   FROM equipo_modelo
                  ORDER BY id DESC";
         return ejecutarConsulta($sql);
+    }
+
+    public function listarCombo()
+    {
+        $sql = "SELECT id, nombre FROM equipo_modelo WHERE is_active = 1 ORDER BY nombre";
+        return ejecutarConsultaArray($sql);
     }
 }
